@@ -10,6 +10,7 @@ const allTickets = [
     id: 1,
     section: "Pista Premium",
     price: "R$ 284",
+    originalPrice: "R$ 568",
     zone: "Pista",
     status: "Mais barato",
     note: "Meia estudante",
@@ -21,7 +22,8 @@ const allTickets = [
   {
     id: 2,
     section: "Frontstage",
-    price: "R$ 406",
+    price: "R$ 203",
+    originalPrice: "R$ 406",
     zone: "Frontstage",
     status: "Disponível",
     note: "Meia estudante",
@@ -32,7 +34,8 @@ const allTickets = [
   {
     id: 3,
     section: "Camarote Open Bar",
-    price: "R$ 776",
+    price: "R$ 388",
+    originalPrice: "R$ 776",
     zone: "Camarote",
     status: "Disponível",
     note: "Inteira",
@@ -146,7 +149,11 @@ const TicketList = ({}: TicketListProps) => {
                 
                 {ticket.features && ticket.features.map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
-                    👁️ <span>{feature}</span>
+                    {feature.includes('🍺') ? (
+                      <span>{feature}</span>
+                    ) : (
+                      <span>{feature}</span>
+                    )}
                   </div>
                 ))}
                 
@@ -163,7 +170,16 @@ const TicketList = ({}: TicketListProps) => {
               </div>
               
               <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center gap-2">
-                <div className="text-lg sm:text-xl font-bold">{ticket.price}</div>
+                <div className="text-right">
+                  {(ticket as any).originalPrice && (
+                    <div className="text-xs text-muted-foreground line-through">
+                      De {(ticket as any).originalPrice}
+                    </div>
+                  )}
+                  <div className="text-lg sm:text-xl font-bold text-green-600">
+                    {(ticket as any).originalPrice ? `por ${ticket.price}` : ticket.price}
+                  </div>
+                </div>
                 <Button 
                   size="sm" 
                   className="bg-ticket-green hover:bg-ticket-green/90 text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4"
