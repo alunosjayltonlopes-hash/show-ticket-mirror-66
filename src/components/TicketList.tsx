@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, BarChart3 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertTriangle, BarChart3, Filter } from "lucide-react";
 import TicketModal from "./TicketModal";
 import { useState } from "react";
 
@@ -41,13 +42,12 @@ const allTickets = [
   }
 ];
 
-interface TicketListProps {
-  selectedZone: string;
-}
+interface TicketListProps {}
 
-const TicketList = ({ selectedZone }: TicketListProps) => {
+const TicketList = ({}: TicketListProps) => {
   const [selectedTicket, setSelectedTicket] = useState<{name: string; price: string; zone: string} | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedZone, setSelectedZone] = useState("todas");
 
   const filteredTickets = selectedZone === "todas" 
     ? allTickets 
@@ -65,6 +65,28 @@ const TicketList = ({ selectedZone }: TicketListProps) => {
 
   return (
     <div>
+      {/* Filtros integrados */}
+      <div className="space-y-4 mb-6">
+        <div className="flex gap-2 flex-wrap items-center">
+          <Button variant="outline" size="sm" className="gap-2 text-xs sm:text-sm">
+            <Filter className="h-4 w-4" />
+            <span className="hidden sm:inline">Filtros</span>
+          </Button>
+
+          <Select value={selectedZone} onValueChange={setSelectedZone}>
+            <SelectTrigger className="w-28 sm:w-32 h-9">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todas">Todas</SelectItem>
+              <SelectItem value="pista">Pista</SelectItem>
+              <SelectItem value="frontstage">Frontstage</SelectItem>
+              <SelectItem value="camarote">Camarote</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <BarChart3 className="h-4 w-4" />
