@@ -7,48 +7,37 @@ import { useState } from "react";
 const allTickets = [
   {
     id: 1,
-    section: "FRONTSTAGE",
-    price: "R$ 231",
-    zone: "Frontstage",
+    section: "Pista Premium",
+    price: "R$ 284",
+    zone: "Pista",
     status: "Mais barato",
     note: "Meia estudante",
-    description: "Zona frente do palco"
+    description: "Ingressos 2",
+    features: ["Visão clara"],
+    urgency: "4 ingressos restantes nessa listagem em nosso site",
+    rating: "10,0 Incrível"
   },
   {
     id: 2,
-    section: "CAMAROTE INTENSE",
-    price: "R$ 354",
-    zone: "Camarote",
+    section: "Frontstage",
+    price: "R$ 406",
+    zone: "Frontstage",
     status: "Disponível",
-    note: "Área VIP",
-    description: "Área exclusiva com vista privilegiada"
+    note: "Meia estudante",
+    description: "Ingressos 2",
+    features: ["Visão clara"],
+    urgency: "2 ingressos restantes nessa listagem em nosso site"
   },
   {
     id: 3,
-    section: "CAMAROTE IMPERIAL",
-    price: "R$ 607",
+    section: "Camarote Open Bar",
+    price: "R$ 776",
     zone: "Camarote",
     status: "Disponível",
-    note: "Premium",
-    description: "Camarote premium com serviços inclusos"
-  },
-  {
-    id: 4,
-    section: "CAMAROTE DO PATRÃO",
-    price: "R$ 919",
-    zone: "Camarote",
-    status: "Limitado",
-    note: "Área exclusiva",
-    description: "A melhor experiência do evento"
-  },
-  {
-    id: 5,
-    section: "CAMAROTE HYPE",
-    price: "R$ 628",
-    zone: "Camarote",
-    status: "Disponível",
-    note: "Área jovem",
-    description: "Camarote com ambiente descontraído"
+    note: "Inteira",
+    description: "Ingressos 2",
+    features: ["Inclui bebidas ilimitadas (cerveja, vinho e licor)", "Visão clara"],
+    urgency: "4 ingressos restantes nessa listagem em nosso site"
   }
 ];
 
@@ -62,7 +51,7 @@ const TicketList = ({ selectedZone }: TicketListProps) => {
 
   const filteredTickets = selectedZone === "todas" 
     ? allTickets 
-    : allTickets.filter(ticket => ticket.zone.toLowerCase() === selectedZone);
+    : allTickets.filter(ticket => ticket.zone.toLowerCase() === selectedZone.toLowerCase());
 
   const handleTicketClick = (ticket: typeof allTickets[0]) => {
     const modalTicket = {
@@ -99,15 +88,32 @@ const TicketList = ({ selectedZone }: TicketListProps) => {
                       {ticket.status}
                     </span>
                   )}
+                  {ticket.rating && (
+                    <span className="text-xs bg-green-600 text-white px-2 py-1 rounded">
+                      {ticket.rating}
+                    </span>
+                  )}
                 </div>
                 
                 <h4 className="font-semibold text-sm sm:text-base">{ticket.section}</h4>
                 <p className="text-xs sm:text-sm text-muted-foreground">{ticket.description}</p>
                 
+                {ticket.features && ticket.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
+                    👁️ <span>{feature}</span>
+                  </div>
+                ))}
+                
                 <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
                   <AlertTriangle className="h-3 w-3 flex-shrink-0" />
                   <span>{ticket.note}</span>
                 </div>
+
+                {ticket.urgency && (
+                  <p className="text-xs text-pink-600 font-medium">
+                    {ticket.urgency}
+                  </p>
+                )}
               </div>
               
               <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center gap-2">
@@ -123,6 +129,10 @@ const TicketList = ({ selectedZone }: TicketListProps) => {
             </div>
           </Card>
         ))}
+      </div>
+
+      <div className="text-center text-xs text-muted-foreground mt-4">
+        Showing {filteredTickets.length} of {allTickets.length}
       </div>
 
       <TicketModal 
