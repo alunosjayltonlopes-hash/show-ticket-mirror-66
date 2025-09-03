@@ -5,9 +5,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { differenceInDays } from "date-fns";
 import { useState, useEffect } from "react";
 import eventBanner from "@/assets/event-banner.jpg";
-
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 const EventHeader = () => {
   const [daysRemaining, setDaysRemaining] = useState(0);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const calculateDaysRemaining = () => {
@@ -25,6 +28,10 @@ const EventHeader = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const goToTickets = () => navigate(user ? '/dashboard' : '/auth');
+  const goToLogin = () => navigate('/auth');
+
   return (
     <div className="border-b bg-card">
       {/* Top Navigation */}
@@ -37,10 +44,10 @@ const EventHeader = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
-            <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToTickets}>
               Meus ingressos
             </Button>
-            <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToLogin}>
               Entrar
             </Button>
             <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -58,10 +65,10 @@ const EventHeader = () => {
               </SheetTrigger>
               <SheetContent>
                 <div className="flex flex-col space-y-4 mt-8">
-                  <Button variant="ghost" className="justify-start">
+                  <Button variant="ghost" className="justify-start" onClick={goToTickets}>
                     Meus ingressos
                   </Button>
-                  <Button variant="ghost" className="justify-start">
+                  <Button variant="ghost" className="justify-start" onClick={goToLogin}>
                     Entrar
                   </Button>
                 </div>
