@@ -2,9 +2,29 @@ import { Heart, Share2, Search, User, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { differenceInDays } from "date-fns";
+import { useState, useEffect } from "react";
 import eventBanner from "@/assets/event-banner.jpg";
 
 const EventHeader = () => {
+  const [daysRemaining, setDaysRemaining] = useState(0);
+
+  useEffect(() => {
+    const calculateDaysRemaining = () => {
+      const eventDate = new Date(2025, 8, 26); // 26 de setembro de 2025 (mês 8 = setembro)
+      const today = new Date();
+      const days = differenceInDays(eventDate, today);
+      setDaysRemaining(days > 0 ? days : 0);
+    };
+
+    // Calcular inicialmente
+    calculateDaysRemaining();
+
+    // Atualizar a cada 24 horas (86400000 ms)
+    const interval = setInterval(calculateDaysRemaining, 86400000);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <div className="border-b bg-card">
       {/* Top Navigation */}
@@ -66,7 +86,7 @@ const EventHeader = () => {
               </h1>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                 <span className="bg-pink-100 text-pink-700 px-2 py-1 rounded text-xs w-fit flex items-center gap-1">
-                  🎫 15 ingressos restantes
+                  ⏰ {daysRemaining > 0 ? `${daysRemaining} dias restantes` : 'Evento hoje!'}
                 </span>
                 <span>26 set • sex • 20:00 • 2025</span>
               </div>
