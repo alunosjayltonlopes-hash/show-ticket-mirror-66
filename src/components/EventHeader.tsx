@@ -65,8 +65,8 @@ const EventHeader = () => {
                 Henrique & Juliano
               </h1>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
-                <span className="bg-success text-success-foreground px-2 py-1 rounded text-xs w-fit">
-                  No próximo final de semana
+                <span className="bg-pink-100 text-pink-700 px-2 py-1 rounded text-xs w-fit flex items-center gap-1">
+                  🎫 15 ingressos restantes
                 </span>
                 <span>26 set • sex • 20:00 • 2025</span>
               </div>
