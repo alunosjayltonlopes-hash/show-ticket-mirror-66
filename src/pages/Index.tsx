@@ -3,6 +3,7 @@ import TicketFilters from "@/components/TicketFilters";
 import TicketTypes from "@/components/TicketTypes";
 import TicketList from "@/components/TicketList";
 import TicketMap from "@/components/TicketMap";
+import CookieBanner from "@/components/CookieBanner";
 import { useState } from "react";
 
 const Index = () => {
@@ -35,6 +36,9 @@ const Index = () => {
           </div>
         </div>
       </div>
+      
+      {/* Cookie Banner */}
+      <CookieBanner />
     </div>
   );
 };
