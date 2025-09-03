@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { differenceInDays } from "date-fns";
 import { useState, useEffect } from "react";
-import eventBanner from "@/assets/event-banner.jpg";
+// import eventBanner from "@/assets/event-banner.jpg";
+const eventBanner = "/lovable-uploads/98e03c32-dc48-4f1d-aa0a-7aae31d6e317.png";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 const EventHeader = () => {
