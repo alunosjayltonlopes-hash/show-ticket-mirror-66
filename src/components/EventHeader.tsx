@@ -38,8 +38,9 @@ const EventHeader = () => {
       <div className="border-b px-4 py-2">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-2 sm:gap-4">
-            <div className="text-xs sm:text-sm text-muted-foreground">BRL</div>
-            <div className="text-xs sm:text-sm text-muted-foreground">PT</div>
+            <div className="text-lg font-bold text-primary">
+              viagogo
+            </div>
           </div>
           
           {/* Desktop Navigation */}
