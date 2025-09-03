@@ -3,11 +3,6 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import { X, Printer, AlertTriangle, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 interface TicketModalProps {
   isOpen: boolean;
@@ -20,60 +15,14 @@ interface TicketModalProps {
 }
 
 const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-
   if (!ticket) return null;
 
-  const handlePurchase = async () => {
-    if (!user) {
-      toast({
-        title: "Login necessário",
-        description: "Você precisa fazer login para comprar ingressos",
-      });
-      navigate('/auth');
-      return;
-    }
-
-    setLoading(true);
-    
-    try {
-      const { error } = await supabase
-        .from('user_tickets')
-        .insert({
-          user_id: user.id,
-          ticket_section: ticket.name,
-          ticket_price: ticket.price,
-          ticket_zone: ticket.zone,
-          quantity: 1,
-          status: 'processing'
-        });
-
-      if (error) {
-        toast({
-          title: "Erro",
-          description: "Não foi possível processar sua compra. Tente novamente.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Sucesso!",
-          description: "Ingresso adicionado com sucesso! Acompanhe o status no seu painel.",
-        });
-        onClose();
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Algo deu errado. Tente novamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handlePurchase = () => {
+    // Redirecionar para checkout externo
+    // Aqui você pode colocar a URL do seu checkout externo
+    const checkoutUrl = `https://checkout.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}`;
+    window.open(checkoutUrl, '_blank');
+    onClose();
   };
 
   return (
@@ -159,9 +108,8 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
           <Button 
             className="w-full bg-ticket-green hover:bg-ticket-green/90 text-white h-10"
             onClick={handlePurchase}
-            disabled={loading}
           >
-            {loading ? "Processando..." : "Selecionar"}
+            Selecionar
           </Button>
         </div>
         </DialogPrimitive.Content>
