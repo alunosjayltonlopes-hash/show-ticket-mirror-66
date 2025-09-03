@@ -17,12 +17,18 @@ const ArtistInfo = () => {
           />
         </div>
         
-        <div className="bg-blue-50 p-3 rounded-lg">
-          <div className="text-sm font-medium text-blue-800 mb-2">Áreas Disponíveis:</div>
-          <div className="grid grid-cols-2 gap-2 text-xs text-blue-600">
-            <div>• Pista Premium</div>
+        <div className="bg-green-50 p-3 rounded-lg mb-3">
+          <div className="text-sm font-medium text-green-800 mb-2">✅ Áreas Disponíveis:</div>
+          <div className="grid grid-cols-1 gap-1 text-xs text-green-600">
             <div>• Frontstage</div>
+            <div>• Pista Premium</div>
             <div>• Camarote Open Bar</div>
+          </div>
+        </div>
+        
+        <div className="bg-red-50 p-3 rounded-lg">
+          <div className="text-sm font-medium text-red-800 mb-2">❌ Áreas Indisponíveis:</div>
+          <div className="grid grid-cols-1 gap-1 text-xs text-red-600">
             <div>• Lounges VIP</div>
             <div>• Área Diamante</div>
             <div>• Setores Ouro/Prata/Bronze</div>
