@@ -9,8 +9,8 @@ const allTickets = [
   {
     id: 1,
     section: "Pista Premium",
-    price: "R$ 284",
-    originalPrice: "R$ 568",
+    price: "R$ 284,00",
+    originalPrice: "R$ 568,00",
     zone: "Pista",
     status: "Mais barato",
     note: "Meia estudante",
@@ -22,8 +22,8 @@ const allTickets = [
   {
     id: 2,
     section: "Frontstage",
-    price: "R$ 203",
-    originalPrice: "R$ 406",
+    price: "R$ 203,00",
+    originalPrice: "R$ 406,00",
     zone: "Frontstage",
     status: "Disponível",
     note: "Meia estudante",
@@ -34,8 +34,8 @@ const allTickets = [
   {
     id: 3,
     section: "Camarote Open Bar",
-    price: "R$ 388",
-    originalPrice: "R$ 776",
+    price: "R$ 388,00",
+    originalPrice: "R$ 776,00",
     zone: "Camarote",
     status: "Disponível",
     note: "Inteira",
@@ -170,9 +170,9 @@ const TicketList = ({}: TicketListProps) => {
               </div>
               
               <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center gap-2">
-                <div className="text-right">
+                <div className="flex flex-col items-start sm:items-end">
                   {(ticket as any).originalPrice && (
-                    <div className="text-xs text-muted-foreground line-through">
+                    <div className="text-xs text-muted-foreground line-through mb-1">
                       De {(ticket as any).originalPrice}
                     </div>
                   )}
