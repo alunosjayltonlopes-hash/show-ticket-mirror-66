@@ -21,20 +21,23 @@ const TicketMap = () => {
           </Button>
         </div>
         
-        <div className="absolute inset-0 flex items-center justify-center p-4">
-          <div className="text-center text-muted-foreground">
-            <div className="text-xs sm:text-sm mb-2">Mapa do Local</div>
-            <div className="w-24 h-16 sm:w-32 sm:h-20 bg-ticket-green rounded mx-auto mb-2"></div>
-            <div className="text-xs">Palco Principal</div>
-          </div>
-        </div>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3654.234567890123!2d-47.01887631586914!3d-22.43334890639271!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDI2JzAwLjEiUyA0N8KwMDEnMDcuOSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr"
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Localização do Evento"
+          className="rounded-lg"
+        ></iframe>
       </div>
       
       <div className="mt-3 sm:mt-4">
-        <div className="text-xs sm:text-sm font-medium mb-2">Legenda</div>
-        <div className="flex items-center gap-2 text-xs sm:text-sm">
-          <div className="w-3 h-3 bg-success rounded-full flex-shrink-0"></div>
-          <span>Mais barato</span>
+        <div className="text-xs sm:text-sm font-medium mb-2">Localização</div>
+        <div className="text-xs sm:text-sm text-muted-foreground">
+          MMR-263 - Mogi Mirim, São Paulo, Sao Paulo, 13800-000
         </div>
       </div>
     </Card>
