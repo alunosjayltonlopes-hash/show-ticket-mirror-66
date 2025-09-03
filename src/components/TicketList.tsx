@@ -37,7 +37,7 @@ const allTickets = [
     status: "Disponível",
     note: "Inteira",
     description: "Ingressos 2",
-    features: ["Inclui bebidas ilimitadas (cerveja, vinho e licor)", "Visão clara"],
+    features: ["🍺 Inclui bebidas ilimitadas (cerveja, vinho e licor)", "Visão clara"],
     urgency: "4 ingressos restantes nessa listagem em nosso site"
   }
 ];
