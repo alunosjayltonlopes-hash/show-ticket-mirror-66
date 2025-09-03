@@ -20,7 +20,7 @@ const Auth = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/dashboard');
     }
   }, [user, navigate]);
 
@@ -60,12 +60,13 @@ const Auth = () => {
             title: "Sucesso!",
             description: "Login realizado com sucesso",
           });
-          navigate('/');
+          navigate('/dashboard');
         } else {
           toast({
             title: "Conta criada!",
-            description: "Verifique seu email para confirmar a conta",
+            description: "Conta criada e login realizado.",
           });
+          navigate('/dashboard');
         }
       }
     } catch (error) {

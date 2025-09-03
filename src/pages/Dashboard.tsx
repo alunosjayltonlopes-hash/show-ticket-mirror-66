@@ -18,7 +18,7 @@ interface UserTicket {
 }
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isLocal } = useAuth();
   const navigate = useNavigate();
   const [tickets, setTickets] = useState<UserTicket[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +34,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       if (!user) return;
+
+      if (isLocal) {
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from('user_tickets')
@@ -140,16 +145,25 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             ) : tickets.length === 0 ? (
-              <Card>
-                <CardContent className="py-8">
-                  <div className="text-center">
-                    <p className="text-muted-foreground mb-4">Você ainda não possui ingressos.</p>
-                    <Button onClick={() => navigate('/')}>
-                      Comprar Ingressos
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              isLocal ? (
+                <Card>
+                  <CardContent className="py-8">
+                    <div className="text-center">
+                      <p className="mb-2 font-medium">Seus ingressos estão sendo processados</p>
+                      <p className="text-muted-foreground text-sm">Assim que o pagamento for confirmado no checkout, eles aparecerão aqui.</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardContent className="py-8">
+                    <div className="text-center">
+                      <p className="text-muted-foreground mb-4">Você ainda não possui ingressos.</p>
+                      <Button onClick={() => navigate('/')}>Comprar Ingressos</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
             ) : (
               <div className="space-y-4">
                 {tickets.map((ticket) => (
