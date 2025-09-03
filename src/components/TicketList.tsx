@@ -1,13 +1,15 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, BarChart3 } from "lucide-react";
+import TicketModal from "./TicketModal";
+import { useState } from "react";
 
 const allTickets = [
   {
     id: 1,
     section: "FRONTSTAGE",
     price: "R$ 231",
-    zone: "frontstage",
+    zone: "Frontstage",
     status: "Mais barato",
     note: "Meia estudante",
     description: "Zona frente do palco"
@@ -16,7 +18,7 @@ const allTickets = [
     id: 2,
     section: "CAMAROTE INTENSE",
     price: "R$ 354",
-    zone: "camarote",
+    zone: "Camarote",
     status: "Disponível",
     note: "Área VIP",
     description: "Área exclusiva com vista privilegiada"
@@ -25,7 +27,7 @@ const allTickets = [
     id: 3,
     section: "CAMAROTE IMPERIAL",
     price: "R$ 607",
-    zone: "camarote",
+    zone: "Camarote",
     status: "Disponível",
     note: "Premium",
     description: "Camarote premium com serviços inclusos"
@@ -34,7 +36,7 @@ const allTickets = [
     id: 4,
     section: "CAMAROTE DO PATRÃO",
     price: "R$ 919",
-    zone: "camarote",
+    zone: "Camarote",
     status: "Limitado",
     note: "Área exclusiva",
     description: "A melhor experiência do evento"
@@ -43,7 +45,7 @@ const allTickets = [
     id: 5,
     section: "CAMAROTE HYPE",
     price: "R$ 628",
-    zone: "camarote",
+    zone: "Camarote",
     status: "Disponível",
     note: "Área jovem",
     description: "Camarote com ambiente descontraído"
@@ -55,9 +57,22 @@ interface TicketListProps {
 }
 
 const TicketList = ({ selectedZone }: TicketListProps) => {
+  const [selectedTicket, setSelectedTicket] = useState<{name: string; price: string; zone: string} | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const filteredTickets = selectedZone === "todas" 
     ? allTickets 
-    : allTickets.filter(ticket => ticket.zone === selectedZone);
+    : allTickets.filter(ticket => ticket.zone.toLowerCase() === selectedZone);
+
+  const handleTicketClick = (ticket: typeof allTickets[0]) => {
+    const modalTicket = {
+      name: ticket.section,
+      price: ticket.price,
+      zone: ticket.zone
+    };
+    setSelectedTicket(modalTicket);
+    setIsModalOpen(true);
+  };
 
   return (
     <div>
@@ -97,7 +112,11 @@ const TicketList = ({ selectedZone }: TicketListProps) => {
               
               <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center gap-2">
                 <div className="text-lg sm:text-xl font-bold">{ticket.price}</div>
-                <Button size="sm" className="bg-ticket-green hover:bg-ticket-green/90 text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4">
+                <Button 
+                  size="sm" 
+                  className="bg-ticket-green hover:bg-ticket-green/90 text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4"
+                  onClick={() => handleTicketClick(ticket)}
+                >
                   Selecionar
                 </Button>
               </div>
@@ -105,6 +124,12 @@ const TicketList = ({ selectedZone }: TicketListProps) => {
           </Card>
         ))}
       </div>
+
+      <TicketModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ticket={selectedTicket}
+      />
     </div>
   );
 };
