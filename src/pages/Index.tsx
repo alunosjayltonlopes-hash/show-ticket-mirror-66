@@ -1,6 +1,6 @@
 import EventHeader from "@/components/EventHeader";
 import TicketFilters from "@/components/TicketFilters";
-import TicketTypes from "@/components/TicketTypes";
+import ArtistInfo from "@/components/ArtistInfo";
 import TicketList from "@/components/TicketList";
 import TicketMap from "@/components/TicketMap";
 import CookieBanner from "@/components/CookieBanner";
@@ -19,7 +19,7 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6">
           {/* Mobile: Stack everything vertically, Desktop: Side columns */}
           <div className="lg:order-1 space-y-4 sm:space-y-6">
-            <TicketTypes />
+            <ArtistInfo />
             <div className="hidden sm:block">
               <TicketMap />
             </div>
