@@ -127,9 +127,9 @@ const Dashboard = () => {
           {/* Welcome Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Bem-vindo ao seu painel!</CardTitle>
+              <CardTitle>Bem-vindo!</CardTitle>
               <CardDescription>
-                Aqui você pode acompanhar todos os seus ingressos e o status das suas compras.
+                Aqui você irá acompanhar todos os seus ingressos e os status das suas compras.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -150,7 +150,7 @@ const Dashboard = () => {
                   <CardContent className="py-8">
                     <div className="text-center">
                       <p className="mb-2 font-medium">Seus ingressos estão sendo processados</p>
-                      <p className="text-muted-foreground text-sm">Assim que o pagamento for confirmado no checkout, eles aparecerão aqui.</p>
+                      <p className="text-muted-foreground text-sm">Se você realizou uma compra aguarde, estamos processando e em breve eles irão aparecer aqui</p>
                     </div>
                   </CardContent>
                 </Card>

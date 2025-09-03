@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 const EventHeader = () => {
   const [daysRemaining, setDaysRemaining] = useState(0);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,12 +45,29 @@ const EventHeader = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
-            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToTickets}>
-              Meus ingressos
-            </Button>
-            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToLogin}>
-              Entrar
-            </Button>
+            {user ? (
+              <>
+                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToTickets}>
+                  Meus ingressos
+                </Button>
+                <span className="text-xs sm:text-sm text-muted-foreground">{user.email}</span>
+                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={async () => {
+                  await signOut();
+                  navigate('/');
+                }}>
+                  Sair
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToTickets}>
+                  Meus ingressos
+                </Button>
+                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToLogin}>
+                  Entrar
+                </Button>
+              </>
+            )}
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <User className="h-4 w-4" />
             </Button>
@@ -66,12 +83,29 @@ const EventHeader = () => {
               </SheetTrigger>
               <SheetContent>
                 <div className="flex flex-col space-y-4 mt-8">
-                  <Button variant="ghost" className="justify-start" onClick={goToTickets}>
-                    Meus ingressos
-                  </Button>
-                  <Button variant="ghost" className="justify-start" onClick={goToLogin}>
-                    Entrar
-                  </Button>
+                  {user ? (
+                    <>
+                      <Button variant="ghost" className="justify-start" onClick={goToTickets}>
+                        Meus ingressos
+                      </Button>
+                      <div className="px-3 py-2 text-sm text-muted-foreground">{user.email}</div>
+                      <Button variant="ghost" className="justify-start" onClick={async () => {
+                        await signOut();
+                        navigate('/');
+                      }}>
+                        Sair
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="ghost" className="justify-start" onClick={goToTickets}>
+                        Meus ingressos
+                      </Button>
+                      <Button variant="ghost" className="justify-start" onClick={goToLogin}>
+                        Entrar
+                      </Button>
+                    </>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
