@@ -15,22 +15,8 @@ const EventHeader = () => {
             <div className="text-xs sm:text-sm text-muted-foreground">PT</div>
           </div>
           
-          {/* Desktop Search */}
-          <div className="hidden lg:flex flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input 
-                placeholder="Busque por eventos, artistas..."
-                className="pl-10"
-              />
-            </div>
-          </div>
-          
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2 lg:gap-4">
-            <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
-              Vender
-            </Button>
+          <div className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
             <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
               Meus ingressos
             </Button>
@@ -52,16 +38,6 @@ const EventHeader = () => {
               </SheetTrigger>
               <SheetContent>
                 <div className="flex flex-col space-y-4 mt-8">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                    <Input 
-                      placeholder="Busque por eventos..."
-                      className="pl-10"
-                    />
-                  </div>
-                  <Button variant="ghost" className="justify-start">
-                    Vender
-                  </Button>
                   <Button variant="ghost" className="justify-start">
                     Meus ingressos
                   </Button>

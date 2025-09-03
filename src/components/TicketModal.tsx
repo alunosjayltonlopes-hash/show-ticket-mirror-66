@@ -1,6 +1,8 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogHeader, DialogTitle, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import { X, Printer, AlertTriangle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface TicketModalProps {
   isOpen: boolean;
@@ -17,7 +19,13 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogPrimitive.Content
+          className={cn(
+            "fixed left-[50%] top-[50%] z-50 grid w-full max-w-sm sm:max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg mx-4 max-h-[90vh] overflow-y-auto"
+          )}
+        >
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="text-base sm:text-lg font-semibold">
@@ -59,20 +67,14 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
-            <div className="bg-muted p-2 rounded text-center text-xs">
-              Cartão
-            </div>
-            <div className="bg-blue-50 p-2 rounded text-center text-xs text-blue-600 border border-blue-200">
-              PayPal
-            </div>
+          <div className="grid grid-cols-1 gap-2">
             <div className="bg-teal-50 p-2 rounded text-center text-xs text-teal-600 border border-teal-200">
               PIX
             </div>
           </div>
 
           <p className="text-xs text-center">
-            Compre agora, pague depois com <span className="text-blue-600 font-medium">PayPal</span>
+            Pagamento instantâneo com <span className="text-teal-600 font-medium">PIX</span>
           </p>
 
           <div className="space-y-2">
@@ -90,7 +92,8 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             Selecionar
           </Button>
         </div>
-      </DialogContent>
+        </DialogPrimitive.Content>
+      </DialogPortal>
     </Dialog>
   );
 };
