@@ -1,7 +1,7 @@
 import { Dialog, DialogHeader, DialogTitle, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
-import { X, Printer, AlertTriangle } from "lucide-react";
+import { X, Printer, AlertTriangle, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TicketModalProps {
@@ -85,6 +85,15 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             <div className="flex items-center gap-2 text-xs sm:text-sm">
               <AlertTriangle className="h-4 w-4 flex-shrink-0" />
               <span>Meia estudante</span>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+            <div className="flex items-center gap-2 text-xs sm:text-sm">
+              <Shield className="h-4 w-4 flex-shrink-0 text-blue-600" />
+              <span className="text-blue-700">
+                Nós garantimos todos os pedidos para que você possa comprar ingressos com 100% de confiança.
+              </span>
             </div>
           </div>
 
