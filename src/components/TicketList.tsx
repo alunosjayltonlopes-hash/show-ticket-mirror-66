@@ -48,10 +48,23 @@ const TicketList = ({}: TicketListProps) => {
   const [selectedTicket, setSelectedTicket] = useState<{name: string; price: string; zone: string} | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedZone, setSelectedZone] = useState("todas");
+  const [priceSort, setPriceSort] = useState("default");
 
-  const filteredTickets = selectedZone === "todas" 
+  // Função para extrair valor numérico do preço
+  const extractPrice = (priceString: string) => {
+    return parseInt(priceString.replace(/[R$\s]/g, ''));
+  };
+
+  let filteredTickets = selectedZone === "todas" 
     ? allTickets 
     : allTickets.filter(ticket => ticket.zone.toLowerCase() === selectedZone.toLowerCase());
+
+  // Aplicar ordenação por preço
+  if (priceSort === "low-to-high") {
+    filteredTickets = [...filteredTickets].sort((a, b) => extractPrice(a.price) - extractPrice(b.price));
+  } else if (priceSort === "high-to-low") {
+    filteredTickets = [...filteredTickets].sort((a, b) => extractPrice(b.price) - extractPrice(a.price));
+  }
 
   const handleTicketClick = (ticket: typeof allTickets[0]) => {
     const modalTicket = {
@@ -82,6 +95,17 @@ const TicketList = ({}: TicketListProps) => {
               <SelectItem value="pista">Pista</SelectItem>
               <SelectItem value="frontstage">Frontstage</SelectItem>
               <SelectItem value="camarote">Camarote</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={priceSort} onValueChange={setPriceSort}>
+            <SelectTrigger className="w-36 sm:w-40 h-9">
+              <SelectValue placeholder="Ordenar por preço" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Padrão</SelectItem>
+              <SelectItem value="low-to-high">Menor preço</SelectItem>
+              <SelectItem value="high-to-low">Maior preço</SelectItem>
             </SelectContent>
           </Select>
         </div>
