@@ -62,16 +62,16 @@ const EventHeader = () => {
             />
             <div className="flex-1 min-w-0">
               <h1 className="text-lg sm:text-xl font-bold mb-2 leading-tight">
-                Cotia Rodeio Fest com Ana Castela, Zé Neto & Cristiano e Os Cara do Arrocha
+                Henrique & Juliano
               </h1>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                 <span className="bg-success text-success-foreground px-2 py-1 rounded text-xs w-fit">
                   No próximo final de semana
                 </span>
-                <span>30 ago • Sáb • 20:00 • 2025</span>
+                <span>26 set • sex • 20:00 • 2025</span>
               </div>
               <div className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Aeródromo Nascimento - SDNI, Cotia, SP, Brasil
+                Espaço Classic Mogi Mirim, São Paulo, São Paulo, Brasil
               </div>
               <div className="text-xs sm:text-sm text-orange-600 mt-2">
                 É necessário ter mais de 18 anos de idade para participar deste evento.
