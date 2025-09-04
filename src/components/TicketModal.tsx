@@ -13,6 +13,9 @@ interface TicketModalProps {
     price: string;
     zone: string;
     urgency: string;
+    features?: string[];
+    note?: string;
+    status?: string;
   } | null;
 }
 
@@ -65,7 +68,9 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             </Button>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground text-left">
-            Zona Frente do palco
+            {ticket.zone === "Camarote" ? "Zona Premium com Bebidas Inclusas" : 
+             ticket.zone === "Frontstage" ? "Zona Frente do palco" :
+             "Zona Frente do palco"}
           </p>
         </DialogHeader>
 
@@ -122,6 +127,21 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             </p>
           </div>
 
+          {/* Features específicas por categoria */}
+          {ticket.features && ticket.features.length > 0 && (
+            <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+              <h4 className="text-sm font-semibold text-amber-800 mb-2">Incluso neste ingresso:</h4>
+              <div className="space-y-1">
+                {ticket.features.map((feature, index) => (
+                  <div key={index} className="flex items-start gap-2 text-xs text-amber-700">
+                    <span className="mt-1">•</span>
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="bg-teal-50 p-2 rounded text-center text-xs text-teal-600 border border-teal-200">
             PIX - Pagamento instantâneo
           </div>
@@ -133,7 +153,7 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             </div>
             <div className="flex items-center gap-1">
               <AlertTriangle className="h-3 w-3" />
-              <span>Meia estudante</span>
+              <span>{ticket.note || "Meia estudante"}</span>
             </div>
           </div>
 
