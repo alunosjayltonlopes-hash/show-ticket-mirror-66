@@ -14,7 +14,7 @@ const allTickets = [
     zone: "Pista",
     status: "Mais barato",
     note: "Meia estudante",
-    description: "Ingressos 2",
+    description: "Limitado a 2 ingressos por CPF",
     features: ["Visão clara"],
     urgency: "4 ingressos restantes nessa listagem em nosso site",
     rating: "10,0 Incrível"
@@ -27,7 +27,7 @@ const allTickets = [
     zone: "Frontstage",
     status: "Disponível",
     note: "Meia estudante",
-    description: "Ingressos 2",
+    description: "Limitado a 2 ingressos por CPF",
     features: ["Visão clara"],
     urgency: "2 ingressos restantes nessa listagem em nosso site"
   },
@@ -39,7 +39,7 @@ const allTickets = [
     zone: "Camarote",
     status: "Disponível",
     note: "Inteira",
-    description: "Ingressos 2",
+    description: "Limitado a 2 ingressos por CPF",
     features: ["Inclui bebidas ilimitadas (cerveja, vinho e licor)", "Visão clara"],
     urgency: "4 ingressos restantes nessa listagem em nosso site"
   }
@@ -136,10 +136,10 @@ const TicketList = ({}: TicketListProps) => {
                       ticket.status === "Mais barato" 
                         ? "bg-success text-success-foreground" 
                         : "bg-muted text-muted-foreground"
-                    }`}>
-                      <span>💚</span>
-                      {ticket.status}
-                    </span>
+                     }`}>
+                       <CheckCircle className="h-3 w-3" />
+                       {ticket.status}
+                     </span>
                   )}
                   {ticket.rating && (
                     <span className="text-xs bg-green-600 text-white px-2 py-1 rounded">
@@ -153,8 +153,16 @@ const TicketList = ({}: TicketListProps) => {
                 
                 {ticket.features && ticket.features.map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
-                    {feature.includes('🍺') ? (
-                      <span>{feature}</span>
+                    {feature.includes('bebidas') ? (
+                      <>
+                        <Wine className="h-3 w-3" />
+                        <span>{feature}</span>
+                      </>
+                    ) : feature.includes('Visão') ? (
+                      <>
+                        <Eye className="h-3 w-3" />
+                        <span>{feature}</span>
+                      </>
                     ) : (
                       <span>{feature}</span>
                     )}
