@@ -19,7 +19,6 @@ const SupportModal = ({ isOpen, onClose }: SupportModalProps) => {
     });
   };
 
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
