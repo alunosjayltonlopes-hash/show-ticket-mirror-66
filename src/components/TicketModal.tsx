@@ -75,40 +75,40 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
         </DialogHeader>
 
         <div className="space-y-3">
-          {/* Seletor de quantidade */}
-          <div className="bg-gray-50 p-3 rounded-lg border space-y-2">
+          {/* Seletor de quantidade - minimalista */}
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-gray-700">Quantidade:</span>
-              <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-700">Quantidade:</span>
+              <div className="flex items-center gap-2">
                 <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8 border-2 hover:bg-gray-100"
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0"
                   onClick={() => handleQuantityChange(quantity - 1)}
                   disabled={quantity <= 1}
                 >
-                  <Minus className="h-4 w-4" />
+                  <Minus className="h-3 w-3" />
                 </Button>
-                <span className="font-bold text-lg w-8 text-center bg-white px-2 py-1 rounded border">{quantity}</span>
+                <span className="font-medium text-base w-6 text-center">{quantity}</span>
                 <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8 border-2 hover:bg-gray-100"
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0"
                   onClick={() => handleQuantityChange(quantity + 1)}
                   disabled={quantity >= 2}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-3 w-3" />
                 </Button>
               </div>
             </div>
 
-            {/* Preço unitário e total */}
-            <div className="pt-2 border-t border-gray-200">
+            {/* Preço total */}
+            <div className="text-right">
               <div className="text-xs text-gray-600">
-                {ticket.price} <span className="font-normal">cada</span>
+                {ticket.price} cada
               </div>
               <div className="text-xl font-bold text-gray-800">
-                R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-sm font-normal text-gray-600">total</span>
+                R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total
               </div>
             </div>
           </div>
