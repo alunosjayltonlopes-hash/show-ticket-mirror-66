@@ -3,6 +3,7 @@ import ArtistInfo from "@/components/ArtistInfo";
 import TicketList from "@/components/TicketList";
 import TicketMap from "@/components/TicketMap";
 import CookieBanner from "@/components/CookieBanner";
+import Footer from "@/components/Footer";
 import { useState } from "react";
 
 const Index = () => {
@@ -33,6 +34,9 @@ const Index = () => {
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
       
       {/* Cookie Banner */}
       <CookieBanner />
