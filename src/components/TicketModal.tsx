@@ -1,8 +1,9 @@
 import { Dialog, DialogHeader, DialogTitle, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
-import { X, Printer, AlertTriangle, Shield } from "lucide-react";
+import { X, Printer, AlertTriangle, Shield, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface TicketModalProps {
   isOpen: boolean;
@@ -16,12 +17,31 @@ interface TicketModalProps {
 }
 
 const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
+  const [quantity, setQuantity] = useState(1);
+  
   if (!ticket) return null;
 
+  // Extrair o valor numérico do preço
+  const extractPrice = (priceString: string): number => {
+    const matches = priceString.match(/R\$\s*([\d,]+)/);
+    if (matches) {
+      return parseFloat(matches[1].replace(',', '.'));
+    }
+    return 0;
+  };
+
+  const unitPrice = extractPrice(ticket.price);
+  const totalPrice = unitPrice * quantity;
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity >= 1 && newQuantity <= 2) {
+      setQuantity(newQuantity);
+    }
+  };
+
   const handlePurchase = () => {
-    // Redirecionar para checkout externo
-    // Aqui você pode colocar a URL do seu checkout externo
-    const checkoutUrl = `https://checkout.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}`;
+    // Redirecionar para checkout externo com quantidade
+    const checkoutUrl = `https://checkout.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}&quantity=${quantity}`;
     window.open(checkoutUrl, '_blank');
     onClose();
   };
@@ -54,10 +74,42 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             Ver todos os ingressos nesta seção
           </p>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xl sm:text-2xl font-bold">
-                {ticket.price} <span className="text-xs sm:text-sm font-normal">cada</span>
+          {/* Seletor de quantidade */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Quantidade:</span>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handleQuantityChange(quantity - 1)}
+                  disabled={quantity <= 1}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="font-medium text-lg w-8 text-center">{quantity}</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handleQuantityChange(quantity + 1)}
+                  disabled={quantity >= 2}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Preço unitário e total */}
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs text-muted-foreground">
+                  {ticket.price} <span className="font-normal">cada</span>
+                </div>
+                <div className="text-xl sm:text-2xl font-bold">
+                  R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs sm:text-sm font-normal">total</span>
+                </div>
               </div>
             </div>
           </div>
