@@ -58,17 +58,18 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
       } else if (quantity === 2) {
         checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713684979622&store=7136";
       }
-    } else {
-      // URLs genéricas para outras categorias (Camarote)
+    } else if (ticket.name === "Camarote Open Bar") {
       if (quantity === 1) {
-        checkoutUrl = `https://checkout-1-ingresso.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}`;
+        checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713697639947&store=7136";
       } else if (quantity === 2) {
-        checkoutUrl = `https://checkout-2-ingressos.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}&total=${totalPrice}`;
+        checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713631219612&store=7136";
       }
     }
     
-    window.open(checkoutUrl, '_blank');
-    onClose();
+    if (checkoutUrl) {
+      window.open(checkoutUrl, '_blank');
+      onClose();
+    }
   };
 
   return (
