@@ -43,8 +43,17 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
   };
 
   const handlePurchase = () => {
-    // Redirecionar para checkout externo com quantidade
-    const checkoutUrl = `https://checkout.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}&quantity=${quantity}`;
+    // URLs diferentes baseados na quantidade
+    let checkoutUrl = '';
+    
+    if (quantity === 1) {
+      // URL para 1 ingresso
+      checkoutUrl = `https://checkout-1-ingresso.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}`;
+    } else if (quantity === 2) {
+      // URL para 2 ingressos
+      checkoutUrl = `https://checkout-2-ingressos.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}&total=${totalPrice}`;
+    }
+    
     window.open(checkoutUrl, '_blank');
     onClose();
   };
