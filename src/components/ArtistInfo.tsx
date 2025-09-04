@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { CheckCircle, XCircle } from "lucide-react";
 
 const ArtistInfo = () => {
   return (
@@ -18,7 +19,10 @@ const ArtistInfo = () => {
         </div>
         
         <div className="bg-green-50 p-3 rounded-lg mb-3">
-          <div className="text-sm font-medium text-green-800 mb-2">✅ Áreas Disponíveis:</div>
+          <div className="text-sm font-medium text-green-800 mb-2 flex items-center gap-2">
+            <CheckCircle className="h-4 w-4" />
+            Áreas Disponíveis:
+          </div>
           <div className="grid grid-cols-1 gap-1 text-xs text-green-600">
             <div>• Frontstage</div>
             <div>• Pista Premium</div>
@@ -27,7 +31,10 @@ const ArtistInfo = () => {
         </div>
         
         <div className="bg-red-50 p-3 rounded-lg">
-          <div className="text-sm font-medium text-red-800 mb-2">❌ Áreas Indisponíveis:</div>
+          <div className="text-sm font-medium text-red-800 mb-2 flex items-center gap-2">
+            <XCircle className="h-4 w-4" />
+            Áreas Indisponíveis:
+          </div>
           <div className="grid grid-cols-1 gap-1 text-xs text-red-600">
             <div>• Lounges VIP</div>
             <div>• Área Diamante</div>

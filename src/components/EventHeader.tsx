@@ -1,4 +1,4 @@
-import { Heart, Share2, Search, User, Menu } from "lucide-react";
+import { Heart, Share2, Search, User, Menu, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -129,7 +129,8 @@ const EventHeader = () => {
               </h1>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                 <span className="bg-pink-100 text-pink-700 px-2 py-1 rounded text-xs w-fit flex items-center gap-1">
-                  ⏰ {daysRemaining > 0 ? `${daysRemaining} dias restantes` : 'Evento hoje!'}
+                  <Clock className="h-3 w-3" />
+                  {daysRemaining > 0 ? `${daysRemaining} dias restantes` : 'Evento hoje!'}
                 </span>
                 <span>26 set • sex • 20:00 • 2025</span>
               </div>
