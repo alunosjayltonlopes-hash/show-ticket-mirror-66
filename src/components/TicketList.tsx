@@ -48,7 +48,7 @@ const allTickets = [
 interface TicketListProps {}
 
 const TicketList = ({}: TicketListProps) => {
-  const [selectedTicket, setSelectedTicket] = useState<{name: string; price: string; zone: string} | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<{name: string; price: string; zone: string; urgency: string} | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedZone, setSelectedZone] = useState("todas");
   const [priceSort, setPriceSort] = useState("default");
@@ -73,7 +73,8 @@ const TicketList = ({}: TicketListProps) => {
     const modalTicket = {
       name: ticket.section,
       price: ticket.price,
-      zone: ticket.zone
+      zone: ticket.zone,
+      urgency: ticket.urgency
     };
     setSelectedTicket(modalTicket);
     setIsModalOpen(true);

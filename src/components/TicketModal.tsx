@@ -11,6 +11,7 @@ interface TicketModalProps {
     name: string;
     price: string;
     zone: string;
+    urgency: string;
   } | null;
 }
 
@@ -71,7 +72,7 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
               <span className="text-green-700">Melhor preço!</span>
             </div>
             <p className="text-xs text-green-600 mt-1">
-              Apenas 14 ingressos restantes neste preço.
+              {ticket.urgency}
             </p>
           </div>
 
