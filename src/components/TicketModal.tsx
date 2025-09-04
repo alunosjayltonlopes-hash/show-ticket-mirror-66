@@ -45,15 +45,21 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
   const handlePurchase = () => {
     let checkoutUrl = '';
     
-    // URLs específicas para Pista Premium
+    // URLs específicas para cada categoria
     if (ticket.name === "Pista Premium") {
       if (quantity === 1) {
         checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713623463492&store=7136";
       } else if (quantity === 2) {
         checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713621611623&store=7136";
       }
+    } else if (ticket.name === "Frontstage") {
+      if (quantity === 1) {
+        checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713615632376&store=7136";
+      } else if (quantity === 2) {
+        checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713684979622&store=7136";
+      }
     } else {
-      // URLs genéricas para outras categorias (temporário)
+      // URLs genéricas para outras categorias (Camarote)
       if (quantity === 1) {
         checkoutUrl = `https://checkout-1-ingresso.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}`;
       } else if (quantity === 2) {
