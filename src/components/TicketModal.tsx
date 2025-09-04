@@ -108,6 +108,10 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             </div>
           </div>
 
+          <p className="text-xs text-muted-foreground">
+            Os preços incluem taxa e taxa de reserva, excluindo taxa de entrega
+          </p>
+
           <div className="bg-ticket-green-light p-2 rounded-lg">
             <div className="flex items-center gap-2 text-sm font-medium">
               <span className="text-green-700">💚</span>
@@ -130,6 +134,15 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             <div className="flex items-center gap-1">
               <AlertTriangle className="h-3 w-3" />
               <span>Meia estudante</span>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 p-2 rounded-lg border border-blue-200">
+            <div className="flex items-center gap-2 text-xs">
+              <Shield className="h-3 w-3 flex-shrink-0 text-blue-600" />
+              <span className="text-blue-700">
+                Garantimos todos os pedidos com 100% de confiança.
+              </span>
             </div>
           </div>
 
