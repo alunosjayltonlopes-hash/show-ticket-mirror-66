@@ -1,4 +1,4 @@
-import { Heart, Share2, Search, User, Menu, Clock } from "lucide-react";
+import { Heart, Share2, Search, User, Menu, Clock, Ticket, Settings, HelpCircle, MapPin, Bell, LogOut, UserCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -82,31 +82,135 @@ const EventHeader = () => {
                   <Menu className="h-4 w-4" />
                 </Button>
               </SheetTrigger>
-              <SheetContent>
-                <div className="flex flex-col space-y-4 mt-8">
-                  {user ? (
-                    <>
-                      <Button variant="ghost" className="justify-start" onClick={goToTickets}>
+              <SheetContent className="w-80 p-0">
+                <div className="flex flex-col h-full">
+                  {/* Header do Menu */}
+                  <div className="bg-primary text-primary-foreground p-6 border-b">
+                    <div className="text-lg font-bold">viagogo</div>
+                    <div className="text-sm opacity-90 mt-1">Menu Principal</div>
+                  </div>
+
+                  {/* Perfil do Usuário */}
+                  {user && (
+                    <div className="p-4 border-b bg-muted/30">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          <UserCircle2 className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium">Logado como:</div>
+                          <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Menu Items */}
+                  <div className="flex-1 p-4 space-y-2">
+                    {/* Principais */}
+                    <div className="space-y-1">
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                        Principal
+                      </div>
+                      
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                        onClick={goToTickets}
+                      >
+                        <Ticket className="h-4 w-4" />
                         Meus ingressos
                       </Button>
-                      <div className="px-3 py-2 text-sm text-muted-foreground">{user.email}</div>
-                      <Button variant="ghost" className="justify-start" onClick={async () => {
-                        await signOut();
-                        navigate('/');
-                      }}>
+
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                      >
+                        <Bell className="h-4 w-4" />
+                        Notificações
+                      </Button>
+
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                      >
+                        <Heart className="h-4 w-4" />
+                        Favoritos
+                      </Button>
+                    </div>
+
+                    {/* Evento Atual */}
+                    <div className="space-y-1 pt-4">
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                        Evento Atual
+                      </div>
+                      
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                      >
+                        <MapPin className="h-4 w-4" />
+                        Local do evento
+                      </Button>
+
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                      >
+                        <Share2 className="h-4 w-4" />
+                        Compartilhar
+                      </Button>
+                    </div>
+
+                    {/* Configurações */}
+                    <div className="space-y-1 pt-4">
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                        Configurações
+                      </div>
+                      
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                      >
+                        <Settings className="h-4 w-4" />
+                        Configurações
+                      </Button>
+
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                      >
+                        <HelpCircle className="h-4 w-4" />
+                        Ajuda & Suporte
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Footer do Menu */}
+                  <div className="p-4 border-t bg-muted/20">
+                    {user ? (
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3 h-11 text-destructive hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20"
+                        onClick={async () => {
+                          await signOut();
+                          navigate('/');
+                        }}
+                      >
+                        <LogOut className="h-4 w-4" />
                         Sair
                       </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button variant="ghost" className="justify-start" onClick={goToTickets}>
-                        Meus ingressos
-                      </Button>
-                      <Button variant="ghost" className="justify-start" onClick={goToLogin}>
+                    ) : (
+                      <Button 
+                        variant="default" 
+                        className="w-full justify-start gap-3 h-11"
+                        onClick={goToLogin}
+                      >
+                        <User className="h-4 w-4" />
                         Entrar
                       </Button>
-                    </>
-                  )}
+                    )}
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
