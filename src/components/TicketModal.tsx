@@ -75,24 +75,24 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
           </p>
 
           {/* Seletor de quantidade */}
-          <div className="space-y-3">
+          <div className="bg-gray-50 p-4 rounded-lg border space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Quantidade:</span>
+              <span className="text-sm font-semibold text-gray-700">Quantidade:</span>
               <div className="flex items-center gap-3">
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-8 w-8"
+                  className="h-9 w-9 border-2 hover:bg-gray-100"
                   onClick={() => handleQuantityChange(quantity - 1)}
                   disabled={quantity <= 1}
                 >
                   <Minus className="h-4 w-4" />
                 </Button>
-                <span className="font-medium text-lg w-8 text-center">{quantity}</span>
+                <span className="font-bold text-xl w-10 text-center bg-white px-2 py-1 rounded border">{quantity}</span>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-8 w-8"
+                  className="h-9 w-9 border-2 hover:bg-gray-100"
                   onClick={() => handleQuantityChange(quantity + 1)}
                   disabled={quantity >= 2}
                 >
@@ -102,13 +102,13 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
             </div>
 
             {/* Preço unitário e total */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-2 border-t border-gray-200">
               <div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-gray-600">
                   {ticket.price} <span className="font-normal">cada</span>
                 </div>
-                <div className="text-xl sm:text-2xl font-bold">
-                  R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs sm:text-sm font-normal">total</span>
+                <div className="text-xl sm:text-2xl font-bold text-gray-800">
+                  R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs sm:text-sm font-normal text-gray-600">total</span>
                 </div>
               </div>
             </div>
