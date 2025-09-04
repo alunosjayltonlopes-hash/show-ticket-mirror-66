@@ -25,8 +25,8 @@ const NotificationModal = ({ isOpen, onClose }: NotificationModalProps) => {
     toast({
       title: choice ? "Notificações ativadas!" : "Notificações desativadas",
       description: choice 
-        ? "Você receberá atualizações sobre o evento Henrique & Juliano"
-        : "Você não receberá notificações sobre este evento",
+        ? "Você receberá atualizações sobre eventos futuros"
+        : "Você não receberá notificações sobre eventos",
     });
     
     setIsLoading(false);
@@ -39,20 +39,21 @@ const NotificationModal = ({ isOpen, onClose }: NotificationModalProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
-            Notificações do Evento
+            Notificações de Eventos
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
           <div className="text-center">
             <div className="text-sm text-muted-foreground mb-4">
-              Deseja receber notificações sobre o evento<br />
-              <span className="font-medium">Henrique & Juliano</span>?
+              Deseja receber notificações dos<br />
+              <span className="font-medium">eventos futuros</span>?
             </div>
             
             <div className="space-y-2">
               <div className="text-xs text-muted-foreground">
-                • Lembrete do evento<br />
+                • Novos eventos disponíveis<br />
+                • Lembretes de eventos<br />
                 • Informações importantes<br />
                 • Atualizações de última hora
               </div>

@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Mail, MessageSquare, Clock, Copy } from "lucide-react";
+import { HelpCircle, Mail, Clock, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface SupportModalProps {
@@ -19,13 +19,6 @@ const SupportModal = ({ isOpen, onClose }: SupportModalProps) => {
     });
   };
 
-  const copyWhatsApp = () => {
-    navigator.clipboard.writeText("(11) 99999-9999");
-    toast({
-      title: "WhatsApp copiado!",
-      description: "O número foi copiado para a área de transferência",
-    });
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -54,25 +47,6 @@ const SupportModal = ({ isOpen, onClose }: SupportModalProps) => {
                 variant="ghost"
                 size="sm"
                 onClick={copyEmail}
-                className="h-6 w-6 p-0"
-              >
-                <Copy className="h-3 w-3" />
-              </Button>
-            </div>
-          </div>
-
-          {/* WhatsApp */}
-          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div className="flex items-center gap-3 mb-2">
-              <MessageSquare className="h-4 w-4 text-green-600" />
-              <span className="font-medium text-green-800">WhatsApp</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-mono">(11) 99999-9999</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={copyWhatsApp}
                 className="h-6 w-6 p-0"
               >
                 <Copy className="h-3 w-3" />
