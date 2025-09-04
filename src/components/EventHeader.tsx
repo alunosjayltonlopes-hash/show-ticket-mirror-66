@@ -134,7 +134,7 @@ const EventHeader = () => {
                 <span>26 set • sex • 20:00 • 2025</span>
               </div>
               <div className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Espaço Classic Mogi Mirim, São Paulo, São Paulo, Brasil
+                Espaço Classic - Mogi Mirim, São Paulo, Brasil
               </div>
               <div className="text-xs sm:text-sm text-orange-600 mt-2">
                 É necessário ter mais de 18 anos de idade para participar deste evento.

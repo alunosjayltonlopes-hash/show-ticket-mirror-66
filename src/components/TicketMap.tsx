@@ -37,7 +37,7 @@ const TicketMap = () => {
       <div className="mt-3 sm:mt-4">
         <div className="text-xs sm:text-sm font-medium mb-2">Localização</div>
         <div className="text-xs sm:text-sm text-muted-foreground">
-          MMR-263 - Mogi Mirim, São Paulo, Sao Paulo, 13800-000
+          Espaço Classic - Mogi Mirim, São Paulo, Brasil
         </div>
       </div>
     </Card>
