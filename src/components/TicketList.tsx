@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, BarChart3, Filter } from "lucide-react";
+import { AlertTriangle, BarChart3, Filter, CheckCircle, Wine, Eye } from "lucide-react";
 import TicketModal from "./TicketModal";
 import { useState } from "react";
 
@@ -40,7 +40,7 @@ const allTickets = [
     status: "Disponível",
     note: "Inteira",
     description: "Ingressos 2",
-    features: ["🍺 Inclui bebidas ilimitadas (cerveja, vinho e licor)", "Visão clara"],
+    features: ["Inclui bebidas ilimitadas (cerveja, vinho e licor)", "Visão clara"],
     urgency: "4 ingressos restantes nessa listagem em nosso site"
   }
 ];

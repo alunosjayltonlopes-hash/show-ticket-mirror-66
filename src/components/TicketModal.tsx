@@ -1,7 +1,7 @@
 import { Dialog, DialogHeader, DialogTitle, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
-import { X, Printer, AlertTriangle, Shield, Minus, Plus } from "lucide-react";
+import { X, Printer, AlertTriangle, Shield, Minus, Plus, CheckCircle, Wine, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -119,7 +119,7 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
 
           <div className="bg-ticket-green-light p-2 rounded-lg">
             <div className="flex items-center gap-2 text-sm font-medium">
-              <span className="text-green-700">💚</span>
+              <CheckCircle className="h-4 w-4 text-green-700" />
               <span className="text-green-700">Melhor preço!</span>
             </div>
             <p className="text-xs text-green-600">
@@ -134,7 +134,13 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
               <div className="space-y-1">
                 {ticket.features.map((feature, index) => (
                   <div key={index} className="flex items-start gap-2 text-xs text-amber-700">
-                    <span className="mt-1">•</span>
+                    {feature.includes('bebidas') ? (
+                      <Wine className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                    ) : feature.includes('Visão') ? (
+                      <Eye className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                    ) : (
+                      <span className="mt-1">•</span>
+                    )}
                     <span>{feature}</span>
                   </div>
                 ))}
