@@ -43,15 +43,22 @@ const TicketModal = ({ isOpen, onClose, ticket }: TicketModalProps) => {
   };
 
   const handlePurchase = () => {
-    // URLs diferentes baseados na quantidade
     let checkoutUrl = '';
     
-    if (quantity === 1) {
-      // URL para 1 ingresso
-      checkoutUrl = `https://checkout-1-ingresso.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}`;
-    } else if (quantity === 2) {
-      // URL para 2 ingressos
-      checkoutUrl = `https://checkout-2-ingressos.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}&total=${totalPrice}`;
+    // URLs específicas para Pista Premium
+    if (ticket.name === "Pista Premium") {
+      if (quantity === 1) {
+        checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713623463492&store=7136";
+      } else if (quantity === 2) {
+        checkoutUrl = "https://checkout.vendeagora.com/api/public/shopify?product=713621611623&store=7136";
+      }
+    } else {
+      // URLs genéricas para outras categorias (temporário)
+      if (quantity === 1) {
+        checkoutUrl = `https://checkout-1-ingresso.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}`;
+      } else if (quantity === 2) {
+        checkoutUrl = `https://checkout-2-ingressos.exemplo.com?ticket=${encodeURIComponent(ticket.name)}&price=${encodeURIComponent(ticket.price)}&zone=${encodeURIComponent(ticket.zone)}&total=${totalPrice}`;
+      }
     }
     
     window.open(checkoutUrl, '_blank');
