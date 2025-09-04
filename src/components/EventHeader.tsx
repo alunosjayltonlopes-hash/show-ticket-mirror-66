@@ -4,12 +4,18 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { differenceInDays } from "date-fns";
 import { useState, useEffect } from "react";
+import NotificationModal from "./NotificationModal";
+import SettingsModal from "./SettingsModal";
+import SupportModal from "./SupportModal";
 // import eventBanner from "@/assets/event-banner.jpg";
 const eventBanner = "/lovable-uploads/98e03c32-dc48-4f1d-aa0a-7aae31d6e317.png";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 const EventHeader = () => {
   const [daysRemaining, setDaysRemaining] = useState(0);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -125,17 +131,10 @@ const EventHeader = () => {
                       <Button 
                         variant="ghost" 
                         className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                        onClick={() => setIsNotificationModalOpen(true)}
                       >
                         <Bell className="h-4 w-4" />
                         Notificações
-                      </Button>
-
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
-                      >
-                        <Heart className="h-4 w-4" />
-                        Favoritos
                       </Button>
                     </div>
 
@@ -148,14 +147,7 @@ const EventHeader = () => {
                       <Button 
                         variant="ghost" 
                         className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
-                      >
-                        <MapPin className="h-4 w-4" />
-                        Local do evento
-                      </Button>
-
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                        disabled
                       >
                         <Share2 className="h-4 w-4" />
                         Compartilhar
@@ -171,6 +163,7 @@ const EventHeader = () => {
                       <Button 
                         variant="ghost" 
                         className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                        onClick={() => setIsSettingsModalOpen(true)}
                       >
                         <Settings className="h-4 w-4" />
                         Configurações
@@ -179,6 +172,7 @@ const EventHeader = () => {
                       <Button 
                         variant="ghost" 
                         className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
+                        onClick={() => setIsSupportModalOpen(true)}
                       >
                         <HelpCircle className="h-4 w-4" />
                         Ajuda & Suporte
@@ -256,6 +250,20 @@ const EventHeader = () => {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <NotificationModal 
+        isOpen={isNotificationModalOpen} 
+        onClose={() => setIsNotificationModalOpen(false)} 
+      />
+      <SettingsModal 
+        isOpen={isSettingsModalOpen} 
+        onClose={() => setIsSettingsModalOpen(false)} 
+      />
+      <SupportModal 
+        isOpen={isSupportModalOpen} 
+        onClose={() => setIsSupportModalOpen(false)} 
+      />
     </div>
   );
 };
