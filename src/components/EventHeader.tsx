@@ -15,7 +15,7 @@ const EventHeader = () => {
 
   useEffect(() => {
     const calculateDaysRemaining = () => {
-      const eventDate = new Date(2025, 8, 26); // 26 de setembro de 2025 (mês 8 = setembro)
+      const eventDate = new Date(2025, 8, 26); // 26 de setembro de 2025 (mês 8 = setembro, ano 2025)
       const today = new Date();
       const days = differenceInDays(eventDate, today);
       setDaysRemaining(days > 0 ? days : 0);
