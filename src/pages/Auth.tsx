@@ -20,7 +20,7 @@ const Auth = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659');
     }
   }, [user, navigate]);
 
@@ -60,13 +60,13 @@ const Auth = () => {
             title: "Sucesso!",
             description: "Login realizado com sucesso",
           });
-          navigate('/dashboard');
+          navigate('/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659');
         } else {
           toast({
             title: "Conta criada!",
             description: "Conta criada e login realizado.",
           });
-          navigate('/dashboard');
+          navigate('/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659');
         }
       }
     } catch (error) {
