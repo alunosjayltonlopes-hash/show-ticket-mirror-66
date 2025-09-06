@@ -23,12 +23,7 @@ const Dashboard = () => {
   const [tickets, setTickets] = useState<UserTicket[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Redirect if not logged in
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-    }
-  }, [user, navigate]);
+  // No redirect needed - public page for ticket purchasing
 
   // Fetch user tickets
   useEffect(() => {
