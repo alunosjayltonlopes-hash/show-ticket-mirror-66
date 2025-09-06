@@ -21,7 +21,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<Dashboard />} />
+            <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<Index />} />
             {/* Legacy route for compatibility */}
             <Route path="/dashboard" element={<Dashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
