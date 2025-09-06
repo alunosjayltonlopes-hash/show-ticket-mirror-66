@@ -36,7 +36,7 @@ const EventHeader = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const goToTickets = () => navigate('/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659');
+  const goToTickets = () => navigate('/dashboard');
   const goToLogin = () => navigate('/auth');
 
   return (
