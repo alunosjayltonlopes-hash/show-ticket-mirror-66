@@ -20,10 +20,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/br/acesso" element={<Auth />} />
-            <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<Dashboard />} />
-            {/* Legacy routes for compatibility */}
             <Route path="/auth" element={<Auth />} />
+            <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<Dashboard />} />
+            {/* Legacy route for compatibility */}
             <Route path="/dashboard" element={<Dashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

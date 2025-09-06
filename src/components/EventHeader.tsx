@@ -36,8 +36,8 @@ const EventHeader = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const goToTickets = () => navigate(user ? '/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659' : '/br/acesso');
-  const goToLogin = () => navigate('/br/acesso');
+  const goToTickets = () => navigate(user ? '/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659' : '/auth');
+  const goToLogin = () => navigate('/auth');
 
   return (
     <div className="border-b bg-card">

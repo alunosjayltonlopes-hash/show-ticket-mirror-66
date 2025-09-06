@@ -26,7 +26,7 @@ const Dashboard = () => {
   // Redirect if not logged in
   useEffect(() => {
     if (!user) {
-      navigate('/br/acesso');
+      navigate('/auth');
     }
   }, [user, navigate]);
 
