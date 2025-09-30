@@ -42,6 +42,27 @@ const ManifestoPage = () => {
           };
         });
 
+        // Remove chat de suporte e widgets flutuantes
+        const chatSelectors = [
+          '[id*="chat"]',
+          '[class*="chat"]',
+          '[id*="support"]',
+          '[class*="support"]',
+          '[id*="widget"]',
+          '[class*="widget"]',
+          '[id*="messenger"]',
+          '[class*="messenger"]',
+          'iframe[src*="chat"]',
+          'iframe[src*="widget"]'
+        ];
+        
+        chatSelectors.forEach(selector => {
+          const elements = iframeDoc.querySelectorAll(selector);
+          elements.forEach(element => {
+            element.remove();
+          });
+        });
+
         // Procura pela seção "INGRESSOS ESGOTADOS" e substitui pelo TicketList
         const walker = iframeDoc.createTreeWalker(
           iframeDoc.body,
