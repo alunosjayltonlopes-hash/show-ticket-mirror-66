@@ -27,18 +27,13 @@ const ManifestoPage = () => {
 
         // Função otimizada para remover elementos indesejados
         const removeUnwantedElements = () => {
-          // Injeta CSS para melhorar renderização E esconder seção antiga de ingressos
+          // Injeta CSS para melhorar renderização
           const optimizationStyles = iframeDoc.createElement('style');
           optimizationStyles.textContent = `
             /* Melhora renderização de fontes */
             * {
               -webkit-font-smoothing: antialiased;
               -moz-osx-font-smoothing: grayscale;
-            }
-            /* Esconde imediatamente a seção antiga de ingressos */
-            *:has(:contains("INGRESSOS ESGOTADOS")) {
-              opacity: 0 !important;
-              visibility: hidden !important;
             }
           `;
           
@@ -102,75 +97,6 @@ const ManifestoPage = () => {
           });
         };
 
-        // Remove a seção de localização/mapa
-        const removeMapSection = () => {
-          // Busca por elementos que contenham "LOCALIZAÇÃO" ou mapa do Google
-          const walker = iframeDoc.createTreeWalker(
-            iframeDoc.body,
-            NodeFilter.SHOW_TEXT,
-            null
-          );
-
-          let node;
-          while ((node = walker.nextNode())) {
-            if (node.textContent?.includes("LOCALIZAÇÃO") || node.textContent?.includes("Ver mapa ampliado")) {
-              // Encontra o container pai da seção do mapa
-              let parent = node.parentElement;
-              let maxLevels = 8; // Limita a busca a 8 níveis acima
-              
-              while (parent && parent !== iframeDoc.body && maxLevels > 0) {
-                // Verifica se este elemento contém o mapa (iframe do Google Maps ou imagem do mapa)
-                const hasMap = parent.querySelector('iframe[src*="google.com/maps"]') || 
-                               parent.querySelector('img[src*="maps"]') ||
-                               parent.querySelector('[class*="map"]') ||
-                               parent.querySelector('[id*="map"]');
-                
-                if (hasMap) {
-                  // Remove toda a seção do mapa, mas preserva o rodapé
-                  // Verifica se não é o rodapé (footer)
-                  const isFooter = parent.tagName === 'FOOTER' || 
-                                   parent.querySelector('footer') ||
-                                   parent.textContent?.includes('CNPJ') ||
-                                   parent.textContent?.includes('Institucional');
-                  
-                  if (!isFooter) {
-                    parent.style.display = 'none';
-                    console.log('Seção de localização/mapa removida');
-                    return;
-                  }
-                }
-                
-                parent = parent.parentElement;
-                maxLevels--;
-              }
-              break;
-            }
-          }
-
-          // Método alternativo: remove iframes do Google Maps diretamente
-          const googleMapsIframes = iframeDoc.querySelectorAll('iframe[src*="google.com/maps"]');
-          googleMapsIframes.forEach(iframe => {
-            let container = iframe.parentElement;
-            let levels = 5;
-            
-            while (container && levels > 0) {
-              const hasLocalizacaoText = container.textContent?.includes('LOCALIZAÇÃO') || 
-                                          container.textContent?.includes('Ver mapa ampliado');
-              const isNotFooter = !container.textContent?.includes('CNPJ') && 
-                                  !container.textContent?.includes('Institucional');
-              
-              if (hasLocalizacaoText && isNotFooter) {
-                container.style.display = 'none';
-                console.log('Seção de mapa removida via iframe do Google Maps');
-                return;
-              }
-              
-              container = container.parentElement;
-              levels--;
-            }
-          });
-        };
-
         // Procura e substitui a seção de ingressos de forma otimizada
         const replaceTicketSection = () => {
           // Busca pela seção que contém "INGRESSOS ESGOTADOS"
@@ -183,15 +109,11 @@ const ManifestoPage = () => {
           let node;
           while ((node = walker.nextNode())) {
             if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
-              // Encontra o container pai principal (pode ser section, div, etc)
-              let parent = node.parentElement;
-              while (parent && parent !== iframeDoc.body && parent.children.length <= 5) {
-                parent = parent.parentElement;
-              }
-              
-              if (parent && parent !== iframeDoc.body) {
-                // Remove o conteúdo antigo imediatamente
-                parent.style.display = 'none';
+              const parent = node.parentElement;
+              if (parent) {
+                // Esconde imediatamente o conteúdo antigo
+                parent.style.opacity = '0';
+                parent.style.transition = 'none';
                 // Cria o novo container com o design fornecido
                 const newSection = iframeDoc.createElement("div");
                 newSection.className = "max-w-2xl mx-auto space-y-4 p-4";
@@ -375,9 +297,9 @@ const ManifestoPage = () => {
                 parent.innerHTML = "";
                 parent.appendChild(newSection);
                 
-                // Mostra o novo conteúdo
-                parent.style.display = 'block';
+                // Mostra o novo conteúdo imediatamente
                 parent.style.opacity = '1';
+                parent.style.transition = 'opacity 0.2s ease-in';
 
                 // Event listeners para os botões de toggle (DEPOIS de adicionar ao DOM)
                 newSection.querySelectorAll('button[data-toggle-id]').forEach((btn) => {
@@ -421,7 +343,6 @@ const ManifestoPage = () => {
 
         // Executa limpeza inicial imediatamente
         removeUnwantedElements();
-        removeMapSection();
         attachMenuHandlers();
         replaceTicketSection();
 
