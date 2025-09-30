@@ -27,13 +27,18 @@ const ManifestoPage = () => {
 
         // Função otimizada para remover elementos indesejados
         const removeUnwantedElements = () => {
-          // Injeta CSS para melhorar renderização
+          // Injeta CSS para melhorar renderização E esconder seção antiga de ingressos
           const optimizationStyles = iframeDoc.createElement('style');
           optimizationStyles.textContent = `
             /* Melhora renderização de fontes */
             * {
               -webkit-font-smoothing: antialiased;
               -moz-osx-font-smoothing: grayscale;
+            }
+            /* Esconde imediatamente a seção antiga de ingressos */
+            *:has(:contains("INGRESSOS ESGOTADOS")) {
+              opacity: 0 !important;
+              visibility: hidden !important;
             }
           `;
           
@@ -109,11 +114,15 @@ const ManifestoPage = () => {
           let node;
           while ((node = walker.nextNode())) {
             if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
-              const parent = node.parentElement;
-              if (parent) {
-                // Esconde imediatamente o conteúdo antigo
-                parent.style.opacity = '0';
-                parent.style.transition = 'none';
+              // Encontra o container pai principal (pode ser section, div, etc)
+              let parent = node.parentElement;
+              while (parent && parent !== iframeDoc.body && parent.children.length <= 5) {
+                parent = parent.parentElement;
+              }
+              
+              if (parent && parent !== iframeDoc.body) {
+                // Remove o conteúdo antigo imediatamente
+                parent.style.display = 'none';
                 // Cria o novo container com o design fornecido
                 const newSection = iframeDoc.createElement("div");
                 newSection.className = "max-w-2xl mx-auto space-y-4 p-4";
@@ -297,9 +306,9 @@ const ManifestoPage = () => {
                 parent.innerHTML = "";
                 parent.appendChild(newSection);
                 
-                // Mostra o novo conteúdo imediatamente
+                // Mostra o novo conteúdo
+                parent.style.display = 'block';
                 parent.style.opacity = '1';
-                parent.style.transition = 'opacity 0.2s ease-in';
 
                 // Event listeners para os botões de toggle (DEPOIS de adicionar ao DOM)
                 newSection.querySelectorAll('button[data-toggle-id]').forEach((btn) => {
