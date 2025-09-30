@@ -42,23 +42,10 @@ const ManifestoPage = () => {
             iframeDoc.head.appendChild(optimizationStyles);
           }
 
-          // Remove links externos de forma mais eficiente
-          const allLinks = iframeDoc.querySelectorAll('a[href*="guicheweb"], a[href^="http"], a[href^="/"]');
-          allLinks.forEach((link) => {
-            const htmlLink = link as HTMLAnchorElement;
-            htmlLink.removeAttribute('href');
-            htmlLink.style.cursor = 'default';
-            htmlLink.style.pointerEvents = 'none';
-          });
+          // Mantendo links do ORIGINAL; não desabilitar para preservar o fluxo
+          // (links continuam funcionando dentro do iframe)
 
-          // Previne envio de formulários
-          const forms = iframeDoc.querySelectorAll('form');
-          forms.forEach((form) => {
-            form.onsubmit = (e) => {
-              e.preventDefault();
-              return false;
-            };
-          });
+          // Mantendo formulários do ORIGINAL; não bloquear envio para preservar o script
 
           // Remove widgets de chat de forma mais eficiente (seletor único)
           const chatElements = iframeDoc.querySelectorAll(
@@ -112,52 +99,7 @@ const ManifestoPage = () => {
 
         // Procura e substitui a seção de ingressos de forma otimizada
         const replaceTicketSection = () => {
-          const walker = iframeDoc.createTreeWalker(
-            iframeDoc.body,
-            NodeFilter.SHOW_TEXT,
-            null
-          );
-
-          let node;
-          while ((node = walker.nextNode())) {
-            if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
-              const parent = node.parentElement;
-              if (parent) {
-                const sectionContainer = iframeDoc.createElement("div");
-                sectionContainer.className = "w-full bg-gray-100 py-8";
-                
-                // Título
-                const titleContainer = iframeDoc.createElement("div");
-                titleContainer.className = "text-center mb-6";
-                
-                const title = iframeDoc.createElement("h1");
-                title.className = "text-3xl md:text-4xl font-bold text-gray-900 mb-2";
-                title.textContent = "INGRESSOS DISPONÍVEIS";
-                
-                const subtitle = iframeDoc.createElement("p");
-                subtitle.className = "text-base md:text-lg text-gray-600";
-                subtitle.textContent = "Escolha sua categoria e garanta seu lugar!";
-                
-                titleContainer.appendChild(title);
-                titleContainer.appendChild(subtitle);
-                
-                // Container do TicketList
-                const ticketContainer = iframeDoc.createElement("div");
-                ticketContainer.id = "react-ticket-list";
-                ticketContainer.className = "w-full";
-                
-                sectionContainer.appendChild(titleContainer);
-                sectionContainer.appendChild(ticketContainer);
-                
-                parent.innerHTML = "";
-                parent.appendChild(sectionContainer);
-                
-                const root = createRoot(ticketContainer);
-                root.render(<TicketList />);
-                break;
-              }
-            }
-          }
+          // Sem ação: preserva layout e scripts do ORIGINAL
         };
 
         // Executa limpeza inicial imediatamente
