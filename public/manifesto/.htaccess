@@ -1,0 +1,9 @@
+# MIME types for Manifesto assets
+AddType text/css .css
+AddType application/javascript .js
+AddType text/javascript .js
+AddType application/json .json
+AddType application/wasm .wasm
+AddType font/woff2 .woff2
+AddType font/woff .woff
+AddType image/svg+xml .svg
