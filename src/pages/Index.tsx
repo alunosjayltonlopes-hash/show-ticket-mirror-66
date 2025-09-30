@@ -1,39 +1,43 @@
 import EventHeader from "@/components/EventHeader";
-import ArtistInfo from "@/components/ArtistInfo";
+import ManifestoHero from "@/components/ManifestoHero";
+import ManifestoInfo from "@/components/ManifestoInfo";
+import ManifestoStadiumMap from "@/components/ManifestoStadiumMap";
 import TicketList from "@/components/TicketList";
-import TicketMap from "@/components/TicketMap";
+import ManifestoVideo from "@/components/ManifestoVideo";
+import ManifestoInformacoes from "@/components/ManifestoInformacoes";
 import CookieBanner from "@/components/CookieBanner";
 import Footer from "@/components/Footer";
-import { useState } from "react";
 
 const Index = () => {
-
   return (
     <div className="min-h-screen bg-background">
       <EventHeader />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Mobile: Stack everything vertically, Desktop: Side columns */}
-          <div className="lg:order-1 space-y-4 sm:space-y-6">
-            <ArtistInfo />
-            <div className="hidden sm:block">
-              <TicketMap />
-            </div>
-          </div>
-          
-          {/* Main content - Ticket List */}
-          <div className="lg:col-span-2 lg:order-2">
-            <TicketList />
-          </div>
-
-          {/* Mobile: Show map at bottom */}
-          <div className="sm:hidden">
-            <TicketMap />
-          </div>
-        </div>
+      {/* Manifesto Hero Section */}
+      <ManifestoHero />
+      
+      {/* Event Info Card */}
+      <div className="py-8">
+        <ManifestoInfo />
       </div>
+
+      {/* Stadium Map */}
+      <ManifestoStadiumMap />
+      
+      {/* Tickets Section - Replacing "INGRESSOS ESGOTADOS" */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold text-foreground mb-2">INGRESSOS DISPONÍVEIS</h2>
+          <p className="text-muted-foreground">Escolha sua categoria e garanta seu lugar!</p>
+        </div>
+        <TicketList />
+      </div>
+
+      {/* Video Section */}
+      <ManifestoVideo />
+
+      {/* Informações Section */}
+      <ManifestoInformacoes />
       
       {/* Footer */}
       <Footer />
