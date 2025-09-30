@@ -14,35 +14,58 @@ const ManifestoPage = () => {
         const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
         if (!iframeDoc) return;
 
-        // Procura pela seção "INGRESSOS ESGOTADOS" e substitui pelo TicketList
-        const esgotadosElement = iframeDoc.body.textContent?.includes("INGRESSOS ESGOTADOS");
-        
-        if (esgotadosElement) {
-          // Cria um container para o React dentro do iframe
-          const ticketContainer = iframeDoc.createElement("div");
-          ticketContainer.id = "react-ticket-list";
-          ticketContainer.className = "max-w-7xl mx-auto px-4 py-12";
+        // Remove todos os links que redirecionam para guicheweb.com.br e outros sites
+        const allLinks = iframeDoc.querySelectorAll('a[href]');
+        allLinks.forEach((link) => {
+          const htmlLink = link as HTMLAnchorElement;
+          const href = htmlLink.getAttribute('href') || '';
           
-          // Procura o elemento com texto "INGRESSOS ESGOTADOS" e substitui
-          const walker = iframeDoc.createTreeWalker(
-            iframeDoc.body,
-            NodeFilter.SHOW_TEXT,
-            null
-          );
+          // Remove links externos (http/https) e links internos do guicheweb
+          if (
+            href.includes('guicheweb.com.br') ||
+            href.includes('http://') ||
+            href.includes('https://') ||
+            href.startsWith('/')
+          ) {
+            htmlLink.removeAttribute('href');
+            htmlLink.style.cursor = 'default';
+            htmlLink.style.pointerEvents = 'none';
+          }
+        });
 
-          let node;
-          while ((node = walker.nextNode())) {
-            if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
-              const parent = node.parentElement;
-              if (parent) {
-                parent.innerHTML = "";
-                parent.appendChild(ticketContainer);
-                
-                // Renderiza o componente React dentro do iframe
-                const root = createRoot(ticketContainer);
-                root.render(<TicketList />);
-                break;
-              }
+        // Remove formulários de busca e navegação
+        const forms = iframeDoc.querySelectorAll('form');
+        forms.forEach((form) => {
+          form.onsubmit = (e) => {
+            e.preventDefault();
+            return false;
+          };
+        });
+
+        // Procura pela seção "INGRESSOS ESGOTADOS" e substitui pelo TicketList
+        const walker = iframeDoc.createTreeWalker(
+          iframeDoc.body,
+          NodeFilter.SHOW_TEXT,
+          null
+        );
+
+        let node;
+        while ((node = walker.nextNode())) {
+          if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
+            const parent = node.parentElement;
+            if (parent) {
+              // Cria um container para o React
+              const ticketContainer = iframeDoc.createElement("div");
+              ticketContainer.id = "react-ticket-list";
+              ticketContainer.className = "max-w-7xl mx-auto px-4 py-12";
+              
+              parent.innerHTML = "";
+              parent.appendChild(ticketContainer);
+              
+              // Renderiza o componente React dentro do iframe
+              const root = createRoot(ticketContainer);
+              root.render(<TicketList />);
+              break;
             }
           }
         }
