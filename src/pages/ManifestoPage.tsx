@@ -1,3 +1,4 @@
+// ManifestoPage - Atualizado para usar iframe com src
 import { useEffect, useRef, useState } from "react";
 import TicketList from "@/components/TicketList";
 import SupportModal from "@/components/SupportModal";
