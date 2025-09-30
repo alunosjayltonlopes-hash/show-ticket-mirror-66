@@ -85,17 +85,17 @@ const ManifestoPage = () => {
           let targetElement = null;
           
           for (const element of Array.from(allElements)) {
-            if ((element as HTMLElement).textContent?.includes("INGRESSOS ESGOTADOS")) {
+            const text = (element as HTMLElement).textContent || '';
+            if (text.includes("INGRESSOS ESGOTADOS") && !text.includes("Gramado")) {
+              // Encontra o elemento mais específico que contém apenas a mensagem
               targetElement = element as HTMLElement;
               break;
             }
           }
 
           if (targetElement) {
-            const parent = targetElement;
-            // Esconde imediatamente o conteúdo antigo
-            parent.style.opacity = '0';
-            parent.style.transition = 'none';
+            // Esconde o elemento antigo sem afetar o resto
+            targetElement.style.display = 'none';
             // Cria o novo container com o design fornecido
             const newSection = iframeDoc.createElement("div");
             newSection.style.cssText = "max-width: 42rem; margin: 0 auto; padding: 1rem;";
@@ -301,14 +301,6 @@ const ManifestoPage = () => {
             `;
             iframeDoc.body.appendChild(footer);
 
-            // Substitui o conteúdo
-            parent.innerHTML = "";
-            parent.appendChild(newSection);
-            
-            // Mostra o novo conteúdo imediatamente
-            parent.style.opacity = '1';
-            parent.style.transition = 'opacity 0.2s ease-in';
-
             // Event listeners para os botões de toggle
             newSection.querySelectorAll('button[data-toggle-id]').forEach((btn) => {
               const toggleId = (btn as HTMLElement).getAttribute('data-toggle-id');
@@ -348,6 +340,11 @@ const ManifestoPage = () => {
               finalizarBtn.addEventListener('click', () => {
                 console.log('Finalizar compra clicado');
               });
+            }
+
+            // Insere a nova seção APÓS o elemento antigo
+            if (targetElement.parentNode) {
+              targetElement.parentNode.insertBefore(newSection, targetElement.nextSibling);
             }
           }
         };
