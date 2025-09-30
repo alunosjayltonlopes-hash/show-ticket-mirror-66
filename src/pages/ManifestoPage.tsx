@@ -10,7 +10,6 @@ const ManifestoPage = () => {
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -337,14 +336,14 @@ const ManifestoPage = () => {
         attachMenuHandlers();
         replaceTicketSection();
 
-        // Observer otimizado com debounce
+        // Observer otimizado com debounce reduzido para melhor performance
         let observerTimeout: NodeJS.Timeout;
         const debouncedHandler = () => {
           clearTimeout(observerTimeout);
           observerTimeout = setTimeout(() => {
             removeUnwantedElements();
             attachMenuHandlers();
-          }, 300);
+          }, 150); // Reduzido de 300ms para 150ms
         };
 
         const observer = new MutationObserver(debouncedHandler);
@@ -357,14 +356,11 @@ const ManifestoPage = () => {
           characterData: false // Não observa mudanças de texto
         });
 
-        // Para o observer após 5 segundos (quando o conteúdo já estiver estável)
+        // Para o observer após 2 segundos (otimizado para carregamento mais rápido)
         setTimeout(() => {
           observer.disconnect();
           console.log('Observer desconectado - carregamento completo');
-        }, 5000);
-
-        // Site carregado
-        setIsLoading(false);
+        }, 2000);
 
         return () => {
           observer.disconnect();
@@ -372,23 +368,12 @@ const ManifestoPage = () => {
         };
       } catch (error) {
         console.error("Erro ao manipular iframe:", error);
-        setIsLoading(false);
       }
     };
   }, [user]);
 
   return (
     <div className="min-h-screen w-full relative">
-      {/* Loading overlay */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm text-muted-foreground">Carregando evento...</p>
-          </div>
-        </div>
-      )}
-
       <iframe
         ref={iframeRef}
         src="/manifesto-original.html"
