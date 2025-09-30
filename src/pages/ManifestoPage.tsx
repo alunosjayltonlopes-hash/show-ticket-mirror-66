@@ -99,7 +99,154 @@ const ManifestoPage = () => {
 
         // Procura e substitui a seção de ingressos de forma otimizada
         const replaceTicketSection = () => {
-          // Sem ação: preserva layout e scripts do ORIGINAL
+          // Busca pela seção que contém "INGRESSOS ESGOTADOS"
+          const walker = iframeDoc.createTreeWalker(
+            iframeDoc.body,
+            NodeFilter.SHOW_TEXT,
+            null
+          );
+
+          let node;
+          while ((node = walker.nextNode())) {
+            if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
+              const parent = node.parentElement;
+              if (parent) {
+                // Cria o novo container com o design fornecido
+                const newSection = iframeDoc.createElement("div");
+                newSection.className = "max-w-2xl mx-auto space-y-4 p-4";
+                newSection.id = "ingressos-section";
+
+                // Injeta o Tailwind CDN se não existir
+                if (!iframeDoc.querySelector('script[src*="tailwindcss"]')) {
+                  const tailwindScript = iframeDoc.createElement('script');
+                  tailwindScript.src = "https://cdn.tailwindcss.com";
+                  iframeDoc.head.appendChild(tailwindScript);
+                }
+
+                // Define os dados dos ingressos
+                const ingressosData = [
+                  { id: 'gramado', nome: 'Gramado', valor: 290, cor: '#53ad53' },
+                  { id: 'inferior-sul', nome: 'Inferior Sul', valor: 220, cor: '#ff78c9' },
+                  { id: 'superior-sul', nome: 'Superior Sul', valor: 180, cor: '#e20615' },
+                  { id: 'inferior-leste', nome: 'Inferior Leste', valor: 220, cor: '#38a1e0' },
+                  { id: 'superior-leste', nome: 'Superior Leste', valor: 180, cor: '#832cb2' },
+                  { id: 'inferior-oeste', nome: 'Inferior Oeste', valor: 220, cor: '#e20615' },
+                ];
+
+                // Cria os blocos de ingressos
+                ingressosData.forEach(({ id, nome, valor, cor }) => {
+                  const bloco = iframeDoc.createElement('div');
+                  bloco.className = 'bg-white shadow rounded';
+                  
+                  const button = iframeDoc.createElement('button');
+                  button.className = 'w-full flex items-center justify-between p-4';
+                  button.onclick = () => toggleSection(id);
+                  
+                  const leftDiv = iframeDoc.createElement('div');
+                  leftDiv.className = 'flex items-center space-x-3';
+                  
+                  const colorBox = iframeDoc.createElement('div');
+                  colorBox.className = 'w-4 h-4 rounded';
+                  colorBox.style.backgroundColor = cor;
+                  
+                  const textDiv = iframeDoc.createElement('div');
+                  const title = iframeDoc.createElement('h2');
+                  title.className = 'font-semibold text-lg';
+                  title.textContent = nome;
+                  
+                  const price = iframeDoc.createElement('p');
+                  price.className = 'text-sm text-gray-500';
+                  price.textContent = `a partir de R$ ${valor},00`;
+                  
+                  textDiv.appendChild(title);
+                  textDiv.appendChild(price);
+                  leftDiv.appendChild(colorBox);
+                  leftDiv.appendChild(textDiv);
+                  
+                  const icon = iframeDoc.createElement('span');
+                  icon.id = `icon-${id}`;
+                  icon.className = 'text-xl font-bold';
+                  icon.textContent = '+';
+                  
+                  button.appendChild(leftDiv);
+                  button.appendChild(icon);
+                  
+                  // Seção expansível
+                  const section = iframeDoc.createElement('div');
+                  section.id = `section-${id}`;
+                  section.className = 'hidden px-4 pb-4 space-y-2';
+                  
+                  const detailsDiv = iframeDoc.createElement('div');
+                  detailsDiv.innerHTML = `
+                    <p><strong>Ingresso Inteiro</strong></p>
+                    <p>Lote Atual</p>
+                    <p class="font-semibold">R$ ${valor},00 + taxa</p>
+                  `;
+                  
+                  const qtyDiv = iframeDoc.createElement('div');
+                  qtyDiv.className = 'flex items-center space-x-3 mt-2';
+                  qtyDiv.innerHTML = `
+                    <label for="qty-${id}" class="text-sm font-medium">Quantidade:</label>
+                    <div class="flex items-center space-x-2">
+                      <button class="px-2 py-1 bg-gray-200 rounded minus-btn" data-id="${id}">-</button>
+                      <span id="qty-${id}" class="w-6 text-center">0</span>
+                      <button class="px-2 py-1 bg-gray-200 rounded plus-btn" data-id="${id}">+</button>
+                    </div>
+                  `;
+                  
+                  section.appendChild(detailsDiv);
+                  section.appendChild(qtyDiv);
+                  
+                  bloco.appendChild(button);
+                  bloco.appendChild(section);
+                  newSection.appendChild(bloco);
+                });
+
+                // Funções de controle
+                const toggleSection = (id: string) => {
+                  const section = iframeDoc.getElementById(`section-${id}`);
+                  const icon = iframeDoc.getElementById(`icon-${id}`);
+                  if (section && icon) {
+                    section.classList.toggle('hidden');
+                    icon.textContent = section.classList.contains('hidden') ? '+' : '-';
+                  }
+                };
+
+                const changeQty = (id: string, delta: number) => {
+                  const qtySpan = iframeDoc.getElementById(`qty-${id}`);
+                  if (qtySpan) {
+                    let qty = parseInt(qtySpan.textContent || '0');
+                    qty = Math.max(0, Math.min(2, qty + delta));
+                    qtySpan.textContent = qty.toString();
+                  }
+                };
+
+                // Event listeners para os botões
+                setTimeout(() => {
+                  iframeDoc.querySelectorAll('.minus-btn').forEach((btn) => {
+                    btn.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      const id = (btn as HTMLElement).dataset.id;
+                      if (id) changeQty(id, -1);
+                    });
+                  });
+                  
+                  iframeDoc.querySelectorAll('.plus-btn').forEach((btn) => {
+                    btn.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      const id = (btn as HTMLElement).dataset.id;
+                      if (id) changeQty(id, 1);
+                    });
+                  });
+                }, 100);
+
+                // Substitui o conteúdo
+                parent.innerHTML = "";
+                parent.appendChild(newSection);
+                break;
+              }
+            }
+          }
         };
 
         // Executa limpeza inicial imediatamente
