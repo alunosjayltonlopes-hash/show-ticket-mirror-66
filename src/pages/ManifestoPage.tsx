@@ -135,6 +135,16 @@ const ManifestoPage = () => {
                   { id: 'inferior-oeste', nome: 'Inferior Oeste', valor: 220, cor: '#e20615' },
                 ];
 
+                // Define as funções ANTES de criar os elementos
+                const toggleSection = (id: string) => {
+                  const section = iframeDoc.getElementById(`section-${id}`);
+                  const icon = iframeDoc.getElementById(`icon-${id}`);
+                  if (section && icon) {
+                    section.classList.toggle('hidden');
+                    icon.textContent = section.classList.contains('hidden') ? '+' : '-';
+                  }
+                };
+
                 // Cria os blocos de ingressos
                 ingressosData.forEach(({ id, nome, valor, cor }) => {
                   const bloco = iframeDoc.createElement('div');
@@ -142,7 +152,7 @@ const ManifestoPage = () => {
                   
                   const button = iframeDoc.createElement('button');
                   button.className = 'w-full flex items-center justify-between p-3';
-                  button.onclick = () => toggleSection(id);
+                  // Usar addEventListener ao invés de onclick
                   
                   const leftDiv = iframeDoc.createElement('div');
                   leftDiv.className = 'flex items-center space-x-2';
@@ -173,6 +183,9 @@ const ManifestoPage = () => {
                   
                   button.appendChild(leftDiv);
                   button.appendChild(icon);
+                  
+                  // Adiciona event listener ao botão
+                  button.addEventListener('click', () => toggleSection(id));
                   
                   // Seção expansível
                   const section = iframeDoc.createElement('div');
@@ -263,15 +276,6 @@ const ManifestoPage = () => {
                     } else {
                       footer.classList.add('hidden');
                     }
-                  }
-                };
-
-                const toggleSection = (id: string) => {
-                  const section = iframeDoc.getElementById(`section-${id}`);
-                  const icon = iframeDoc.getElementById(`icon-${id}`);
-                  if (section && icon) {
-                    section.classList.toggle('hidden');
-                    icon.textContent = section.classList.contains('hidden') ? '+' : '-';
                   }
                 };
 
