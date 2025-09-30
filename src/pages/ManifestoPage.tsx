@@ -413,7 +413,7 @@ const ManifestoPage = () => {
 
       <iframe
         ref={iframeRef}
-        src="/manifesto/index.html"
+        src="manifesto/index.html"
         className="w-full h-screen border-0"
         title="Manifesto Musical"
         sandbox="allow-scripts allow-same-origin allow-forms"
