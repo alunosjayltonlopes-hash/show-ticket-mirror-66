@@ -1,0 +1,14 @@
+# MIME Types configuration
+AddType text/css .css
+AddType application/javascript .js
+AddType text/javascript .js
+AddType image/svg+xml .svg
+AddType font/woff2 .woff2
+AddType font/woff .woff
+AddType application/wasm .wasm
+AddType application/json .json
+
+# Enable CORS if needed
+<IfModule mod_headers.c>
+  Header set Access-Control-Allow-Origin "*"
+</IfModule>
