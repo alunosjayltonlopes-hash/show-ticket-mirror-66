@@ -1,10 +1,13 @@
 [[redirects]]
+  from = "/manifesto-original.html"
+  to = "/manifesto-original.html"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
   force = false
-  conditions = {path = ["!/*.html"]}
-
 [[headers]]
   for = "/*"
   [headers.values]
