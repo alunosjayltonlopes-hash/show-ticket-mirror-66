@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import SupportModal from "@/components/SupportModal";
 import UserMenuModal from "@/components/UserMenuModal";
 import { useAuth } from "@/hooks/useAuth";
+import manifestoHtml from "@/assets/manifesto/index.html?raw";
 
 const ManifestoPage = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -9,14 +10,6 @@ const ManifestoPage = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [manifestoHtml, setManifestoHtml] = useState<string>("");
-
-  useEffect(() => {
-    fetch("/manifesto/index.html")
-      .then(res => res.text())
-      .then(html => setManifestoHtml(html))
-      .catch(err => console.error("Erro ao carregar manifesto:", err));
-  }, []);
 
   useEffect(() => {
     const iframe = iframeRef.current;
