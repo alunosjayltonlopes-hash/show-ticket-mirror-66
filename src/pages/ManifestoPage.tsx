@@ -22,6 +22,16 @@ const ManifestoPage = () => {
         const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
         if (!iframeDoc || cleanupExecuted) return;
 
+        // Previne navegação para URLs relativas do manifesto
+        const preventBadNavigation = (e: Event) => {
+          const target = e.target as HTMLAnchorElement;
+          if (target.tagName === 'A' && target.href && target.href.includes('manifesto/index.html')) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        };
+        iframeDoc.addEventListener('click', preventBadNavigation, true);
+
         cleanupExecuted = true;
 
         // Função para remover apenas scripts de tracking específicos
@@ -391,6 +401,7 @@ const ManifestoPage = () => {
         return () => {
           observer.disconnect();
           clearTimeout(observerTimeout);
+          iframeDoc.removeEventListener('click', preventBadNavigation, true);
         };
       } catch (error) {
         console.error("Erro ao manipular iframe:", error);
@@ -416,7 +427,7 @@ const ManifestoPage = () => {
         srcDoc={manifestoHtml}
         className="w-full h-screen border-0"
         title="Manifesto Musical"
-        sandbox="allow-scripts allow-same-origin allow-forms"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
       />
 
       {/* Modais controlados fora do iframe */}
