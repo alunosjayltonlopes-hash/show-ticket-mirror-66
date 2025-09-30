@@ -1,219 +1,221 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, BarChart3, Filter, CheckCircle, Wine, Eye } from "lucide-react";
-import TicketModal from "./TicketModal";
 import { useState } from "react";
+import { ChevronDown, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-const allTickets = [
+interface TicketCategory {
+  id: string;
+  name: string;
+  price: number;
+  checkoutUrls: {
+    quantity1: string;
+    quantity2: string;
+  };
+}
+
+const ticketCategories: TicketCategory[] = [
   {
-    id: 1,
-    section: "Pista Premium",
-    price: "R$ 284,00",
-    originalPrice: "R$ 568,00",
-    zone: "Pista",
-    status: "Mais barato",
-    note: "Meia estudante",
-    description: "Limitado a 2 ingressos por CPF",
-    features: ["Visão clara"],
-    urgency: "4 ingressos restantes nessa listagem em nosso site",
-    rating: "10,0 Incrível"
+    id: "gramado",
+    name: "GRAMADO",
+    price: 290,
+    checkoutUrls: {
+      quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713623463492&store=7136",
+      quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713621611623&store=7136"
+    }
   },
   {
-    id: 2,
-    section: "Frontstage",
-    price: "R$ 203,00",
-    originalPrice: "R$ 406,00",
-    zone: "Frontstage",
-    status: "Disponível",
-    note: "Meia estudante",
-    description: "Limitado a 2 ingressos por CPF",
-    features: ["Visão clara"],
-    urgency: "2 ingressos restantes nessa listagem em nosso site"
+    id: "inferior-sul",
+    name: "INFERIOR SUL",
+    price: 220,
+    checkoutUrls: {
+      quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713615632376&store=7136",
+      quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713684979622&store=7136"
+    }
   },
   {
-    id: 3,
-    section: "Camarote Open Bar",
-    price: "R$ 388,00",
-    originalPrice: "R$ 776,00",
-    zone: "Camarote",
-    status: "Disponível",
-    note: "Inteira",
-    description: "Limitado a 2 ingressos por CPF",
-    features: ["Inclui bebidas ilimitadas (cerveja, vinho e licor)", "Visão clara"],
-    urgency: "4 ingressos restantes nessa listagem em nosso site"
+    id: "superior-sul",
+    name: "SUPERIOR SUL",
+    price: 180,
+    checkoutUrls: {
+      quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713697639947&store=7136",
+      quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713631219612&store=7136"
+    }
+  },
+  {
+    id: "inferior-leste",
+    name: "INFERIOR LESTE",
+    price: 220,
+    checkoutUrls: {
+      quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713623463492&store=7136",
+      quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713621611623&store=7136"
+    }
+  },
+  {
+    id: "superior-leste",
+    name: "SUPERIOR LESTE",
+    price: 180,
+    checkoutUrls: {
+      quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713615632376&store=7136",
+      quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713684979622&store=7136"
+    }
+  },
+  {
+    id: "inferior-oeste",
+    name: "INFERIOR OESTE",
+    price: 220,
+    checkoutUrls: {
+      quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713697639947&store=7136",
+      quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713631219612&store=7136"
+    }
   }
 ];
 
-interface TicketListProps {}
+const TicketList = () => {
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
 
-const TicketList = ({}: TicketListProps) => {
-  const [selectedTicket, setSelectedTicket] = useState<{name: string; price: string; zone: string; urgency: string; features?: string[]; note?: string; status?: string} | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedZone, setSelectedZone] = useState("todas");
-  const [priceSort, setPriceSort] = useState("default");
-
-  // Função para extrair valor numérico do preço
-  const extractPrice = (priceString: string) => {
-    return parseInt(priceString.replace(/[R$\s]/g, ''));
+  const handleCategoryClick = (categoryId: string) => {
+    setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
   };
 
-  let filteredTickets = selectedZone === "todas" 
-    ? allTickets 
-    : allTickets.filter(ticket => ticket.zone.toLowerCase() === selectedZone.toLowerCase());
-
-  // Aplicar ordenação por preço
-  if (priceSort === "low-to-high") {
-    filteredTickets = [...filteredTickets].sort((a, b) => extractPrice(a.price) - extractPrice(b.price));
-  } else if (priceSort === "high-to-low") {
-    filteredTickets = [...filteredTickets].sort((a, b) => extractPrice(b.price) - extractPrice(a.price));
-  }
-
-  const handleTicketClick = (ticket: typeof allTickets[0]) => {
-    const modalTicket = {
-      name: ticket.section,
-      price: ticket.price,
-      zone: ticket.zone,
-      urgency: ticket.urgency,
-      features: ticket.features,
-      note: ticket.note,
-      status: ticket.status
-    };
-    setSelectedTicket(modalTicket);
-    setIsModalOpen(true);
+  const handleQuantityChange = (categoryId: string, newQuantity: number) => {
+    if (newQuantity >= 0 && newQuantity <= 2) {
+      setQuantities(prev => ({
+        ...prev,
+        [categoryId]: newQuantity
+      }));
+    }
   };
+
+  const getTotalItems = () => {
+    return Object.values(quantities).reduce((sum, qty) => sum + qty, 0);
+  };
+
+  const getTotalPrice = () => {
+    return Object.entries(quantities).reduce((sum, [categoryId, qty]) => {
+      const category = ticketCategories.find(c => c.id === categoryId);
+      return sum + (category ? category.price * qty : 0);
+    }, 0);
+  };
+
+  const handleContinue = () => {
+    // Encontrar a categoria com ingressos selecionados
+    const selectedCategory = Object.entries(quantities).find(([_, qty]) => qty > 0);
+    
+    if (selectedCategory) {
+      const [categoryId, quantity] = selectedCategory;
+      const category = ticketCategories.find(c => c.id === categoryId);
+      
+      if (category) {
+        const checkoutUrl = quantity === 1 ? category.checkoutUrls.quantity1 : category.checkoutUrls.quantity2;
+        window.open(checkoutUrl, '_blank');
+      }
+    }
+  };
+
+  const hasSelectedTickets = getTotalItems() > 0;
 
   return (
-    <div>
-      {/* Filtros integrados */}
-      <div className="space-y-4 mb-6">
-        <div className="flex gap-2 flex-wrap items-center">
-          <Button variant="outline" size="sm" className="gap-2 text-xs sm:text-sm">
-            <Filter className="h-4 w-4" />
-            <span className="hidden sm:inline">Filtros</span>
-          </Button>
+    <div className="relative pb-24">
+      <div className="space-y-2">
+        {ticketCategories.map((category) => {
+          const isExpanded = expandedCategory === category.id;
+          const quantity = quantities[category.id] || 0;
 
-          <Select value={selectedZone} onValueChange={setSelectedZone}>
-            <SelectTrigger className="w-28 sm:w-32 h-9">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todas">Todas</SelectItem>
-              <SelectItem value="pista">Pista</SelectItem>
-              <SelectItem value="frontstage">Frontstage</SelectItem>
-              <SelectItem value="camarote">Camarote</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={priceSort} onValueChange={setPriceSort}>
-            <SelectTrigger className="w-36 sm:w-40 h-9">
-              <SelectValue placeholder="Ordenar por preço" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Padrão</SelectItem>
-              <SelectItem value="low-to-high">Menor preço</SelectItem>
-              <SelectItem value="high-to-low">Maior preço</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <BarChart3 className="h-4 w-4" />
-          <span className="text-xs sm:text-sm">Classificar por preço</span>
-        </div>
-      </div>
-      
-      <div className="space-y-3">
-        {filteredTickets.map((ticket) => (
-          <Card key={ticket.id} className="p-3 sm:p-4 hover:shadow-md transition-shadow cursor-pointer">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <div className="flex-1 space-y-2">
-                <div className="flex items-center gap-2 mb-2">
-                  {ticket.status && (
-                    <span className={`text-xs px-2 py-1 rounded flex items-center gap-1 ${
-                      ticket.status === "Mais barato" 
-                        ? "bg-success text-success-foreground" 
-                        : "bg-muted text-muted-foreground"
-                     }`}>
-                       <CheckCircle className="h-3 w-3" />
-                       {ticket.status}
-                     </span>
-                  )}
-                  {ticket.rating && (
-                    <span className="text-xs bg-green-600 text-white px-2 py-1 rounded">
-                      {ticket.rating}
-                    </span>
-                  )}
+          return (
+            <div key={category.id} className="border border-border rounded-lg overflow-hidden bg-card">
+              {/* Header - sempre visível */}
+              <button
+                onClick={() => handleCategoryClick(category.id)}
+                className="w-full px-4 py-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
+              >
+                <div className="flex flex-col items-start gap-1">
+                  <h3 className="font-semibold text-base">{category.name}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    R$ {category.price.toFixed(2)}
+                  </p>
                 </div>
-                
-                <h4 className="font-semibold text-sm sm:text-base">{ticket.section}</h4>
-                <p className="text-xs sm:text-sm text-muted-foreground">{ticket.description}</p>
-                
-                {ticket.features && ticket.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
-                    {feature.includes('bebidas') ? (
-                      <>
-                        <Wine className="h-3 w-3" />
-                        <span>{feature}</span>
-                      </>
-                    ) : feature.includes('Visão') ? (
-                      <>
-                        <Eye className="h-3 w-3" />
-                        <span>{feature}</span>
-                      </>
-                    ) : (
-                      <span>{feature}</span>
+                <ChevronDown 
+                  className={cn(
+                    "h-5 w-5 text-muted-foreground transition-transform",
+                    isExpanded && "rotate-180"
+                  )}
+                />
+              </button>
+
+              {/* Conteúdo expansível */}
+              {isExpanded && (
+                <div className="px-4 pb-4 border-t border-border bg-muted/20">
+                  <div className="pt-4 space-y-4">
+                    {/* Seletor de quantidade */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Quantidade:</span>
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => handleQuantityChange(category.id, quantity - 1)}
+                          disabled={quantity <= 0}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="font-bold text-lg w-8 text-center">{quantity}</span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => handleQuantityChange(category.id, quantity + 1)}
+                          disabled={quantity >= 2}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Subtotal */}
+                    {quantity > 0 && (
+                      <div className="flex items-center justify-between pt-2 border-t border-border">
+                        <span className="text-sm text-muted-foreground">Subtotal:</span>
+                        <span className="font-bold text-lg">
+                          R$ {(category.price * quantity).toFixed(2)}
+                        </span>
+                      </div>
                     )}
                   </div>
-                ))}
-                
-                <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
-                  <AlertTriangle className="h-3 w-3 flex-shrink-0" />
-                  <span>{ticket.note}</span>
                 </div>
-
-                {ticket.urgency && (
-                  <p className="text-xs text-pink-600 font-medium">
-                    {ticket.urgency}
-                  </p>
-                )}
-              </div>
-              
-              <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center gap-2">
-                <div className="flex flex-col items-start sm:items-end">
-                  {(ticket as any).originalPrice && (
-                    <div className="text-xs text-muted-foreground line-through mb-1">
-                      De {(ticket as any).originalPrice}
-                    </div>
-                  )}
-                  <div className="text-lg sm:text-xl font-bold text-green-600">
-                    {(ticket as any).originalPrice ? `por ${ticket.price}` : ticket.price}
-                  </div>
-                </div>
-                <Button 
-                  size="sm" 
-                  className="bg-ticket-green hover:bg-ticket-green/90 text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4"
-                  onClick={() => handleTicketClick(ticket)}
-                >
-                  Selecionar
-                </Button>
-              </div>
+              )}
             </div>
-          </Card>
-        ))}
+          );
+        })}
       </div>
 
-      <div className="text-center text-xs text-muted-foreground mt-4">
-        Showing {filteredTickets.length} of {allTickets.length}
-      </div>
-
-      <TicketModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        ticket={selectedTicket}
-      />
+      {/* Carrinho fixo na parte inferior */}
+      {hasSelectedTickets && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-ticket-green shadow-lg border-t-4 border-ticket-green-dark">
+          <div className="max-w-3xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 text-white">
+                <ShoppingCart className="h-5 w-5" />
+                <div>
+                  <p className="font-bold text-lg">
+                    {getTotalItems()} {getTotalItems() === 1 ? 'Ingresso' : 'Ingressos'}
+                  </p>
+                  <p className="text-sm opacity-90">
+                    R$ {getTotalPrice().toFixed(2)}
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={handleContinue}
+                className="bg-white text-ticket-green-dark hover:bg-white/90 font-bold px-6 h-11"
+              >
+                CONTINUAR
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
