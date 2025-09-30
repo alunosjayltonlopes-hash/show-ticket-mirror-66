@@ -27,27 +27,10 @@ const ManifestoPage = () => {
 
         // Função otimizada para remover elementos indesejados
         const removeUnwantedElements = () => {
-          // Injeta CSS para otimizar o carregamento do rodapé
+          // Injeta CSS apenas para suavizar aparição do rodapé
           const optimizationStyles = iframeDoc.createElement('style');
           optimizationStyles.textContent = `
-            /* Oculta rodapé até estar completamente carregado */
-            footer, [class*="footer"], [id*="footer"] {
-              opacity: 0;
-              transition: opacity 0.4s ease-in-out;
-            }
-            
-            /* Mostra rodapé quando carregado */
-            footer.loaded, [class*="footer"].loaded, [id*="footer"].loaded {
-              opacity: 1 !important;
-            }
-            
-            /* Força layout mobile correto imediatamente */
-            footer *, [class*="footer"] *, [id*="footer"] * {
-              max-width: 100vw;
-              box-sizing: border-box;
-            }
-            
-            /* Remove transições pesadas durante o carregamento inicial */
+            /* Melhora renderização de fontes */
             * {
               -webkit-font-smoothing: antialiased;
               -moz-osx-font-smoothing: grayscale;
@@ -88,14 +71,6 @@ const ManifestoPage = () => {
           // Remove scripts de chat de forma otimizada
           const scripts = iframeDoc.querySelectorAll('script[src*="chat"], script[src*="widget"], script[src*="crisp"], script[src*="intercom"]');
           scripts.forEach(script => script.remove());
-          
-          // Mostra rodapé quando estiver pronto
-          setTimeout(() => {
-            const footers = iframeDoc.querySelectorAll('footer, [class*="footer"], [id*="footer"]');
-            footers.forEach((footer) => {
-              (footer as HTMLElement).classList.add('loaded');
-            });
-          }, 300);
         };
 
         // Função otimizada para adicionar handlers de menu
