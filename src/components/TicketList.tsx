@@ -53,73 +53,72 @@ const TicketList = () => {
   const hasSelectedTickets = getTotalItems() > 0;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-4 sm:py-8">
+    <div className="max-w-2xl mx-auto p-4">
       {/* Lista de Ingressos */}
-      <div className="space-y-3 sm:space-y-4">
+      <div className="space-y-4">
         {ticketCategories.map((category) => {
           const isExpanded = expandedCategories[category.id];
           const qty = quantities[category.id] || 0;
           
           return (
-            <div key={category.id} className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+            <div key={category.id} className="bg-white shadow rounded">
               {/* Cabeçalho */}
               <button
                 onClick={() => toggleCategory(category.id)}
-                className="w-full flex items-center justify-between p-3 sm:p-4"
+                className="w-full flex items-center justify-between p-4"
               >
-                <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="flex items-center space-x-3">
                   <div 
-                    className="w-3 h-3 sm:w-4 sm:h-4 rounded flex-shrink-0" 
+                    className="w-4 h-4 rounded" 
                     style={{ backgroundColor: category.color }}
                   />
-                  <div className="text-left">
-                    <h2 className="font-semibold text-base sm:text-lg text-gray-900">
+                  <div>
+                    <h2 className="font-semibold text-lg text-gray-900">
                       {category.name}
                     </h2>
-                    <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: category.color }} />
-                      <span>a partir de R$ {category.price.toFixed(2).replace('.', ',')}</span>
-                    </div>
+                    <p className="text-sm text-gray-500">
+                      a partir de R$ {category.price.toFixed(0)},00
+                    </p>
                   </div>
                 </div>
-                <span className="text-xl sm:text-2xl font-bold text-gray-900 flex-shrink-0">
-                  {isExpanded ? '−' : '+'}
+                <span className="text-xl font-bold text-gray-900">
+                  {isExpanded ? '-' : '+'}
                 </span>
               </button>
 
               {/* Conteúdo expandido */}
               {isExpanded && (
-                <div className="px-3 sm:px-4 pb-3 sm:pb-4 space-y-3">
+                <div className="px-4 pb-4 space-y-2">
                   <div>
-                    <p className="font-semibold text-sm sm:text-base text-gray-900">Ingresso Inteiro</p>
-                    <p className="text-xs sm:text-sm text-gray-600">Lote Atual</p>
-                    <p className="font-semibold text-sm sm:text-base text-gray-900">
-                      R$ {category.price.toFixed(2).replace('.', ',')} + taxa
+                    <p className="text-gray-900"><strong>Ingresso Inteiro</strong></p>
+                    <p className="text-gray-900">Lote Atual</p>
+                    <p className="font-semibold text-gray-900">
+                      R$ {category.price.toFixed(0)},00 + taxa
                     </p>
                   </div>
                   
                   {/* Controles de quantidade */}
                   <div className="flex items-center space-x-3 mt-2">
-                    <label className="text-xs sm:text-sm font-medium text-gray-900">
+                    <label className="text-sm font-medium text-gray-900">
                       Quantidade:
                     </label>
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleQuantityChange(category.id, -1)}
                         disabled={qty === 0}
-                        className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
-                        <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
+                        -
                       </button>
-                      <span className="w-6 sm:w-8 text-center font-semibold text-sm sm:text-base text-gray-900">
+                      <span className="w-6 text-center text-gray-900">
                         {qty}
                       </span>
                       <button
                         onClick={() => handleQuantityChange(category.id, 1)}
                         disabled={qty >= 2}
-                        className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
-                        <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                        +
                       </button>
                     </div>
                   </div>
