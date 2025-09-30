@@ -3,10 +3,13 @@ import { createRoot } from "react-dom/client";
 import TicketList from "@/components/TicketList";
 import SupportModal from "@/components/SupportModal";
 import UserMenuModal from "@/components/UserMenuModal";
+import { useAuth } from "@/hooks/useAuth";
+
 const ManifestoPage = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -136,7 +139,12 @@ const ManifestoPage = () => {
               el.addEventListener('keydown', (e: any) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(e); } });
             };
 
-            if (text.includes('entre') || text.includes('cadastre')) {
+            if (text.includes('entre') || text.includes('cadastre') || text.includes('olá')) {
+              // Se o usuário estiver logado, substitui o texto
+              if (user) {
+                const displayName = user.email?.split('@')[0] || user.email || 'Usuário';
+                el.textContent = `Olá, ${displayName}`;
+              }
               makeButton(() => setIsUserMenuOpen(true));
             } else if (text.includes('ajuda')) {
               makeButton(() => setIsSupportOpen(true));
@@ -212,7 +220,11 @@ const ManifestoPage = () => {
 
       {/* Modais controlados fora do iframe */}
       <SupportModal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
-      <UserMenuModal isOpen={isUserMenuOpen} onClose={() => setIsUserMenuOpen(false)} />
+      <UserMenuModal 
+        isOpen={isUserMenuOpen} 
+        onClose={() => setIsUserMenuOpen(false)}
+        isLoggedIn={!!user}
+      />
     </div>
   );
 };

@@ -1,18 +1,22 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Ticket, UserCircle2, LogIn, X } from "lucide-react";
+import { Ticket, UserCircle2, LogIn, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UserMenuModalProps {
   isOpen: boolean;
   onClose: () => void;
+  isLoggedIn?: boolean;
 }
 
-const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
+const UserMenuModal = ({ isOpen, onClose, isLoggedIn = false }: UserMenuModalProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     console.log('UserMenuModal isOpen mudou para:', isOpen);
@@ -43,6 +47,30 @@ const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
   const handleLoginSignup = () => {
     console.log('Clicou em Login/Cadastro');
     navigate('/auth');
+    onClose();
+  };
+
+  const handleLogout = async () => {
+    console.log('Clicou em Sair');
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso.",
+      });
+      
+      // Recarrega a página para atualizar o estado
+      window.location.reload();
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      toast({
+        title: "Erro ao sair",
+        description: "Não foi possível desconectar. Tente novamente.",
+        variant: "destructive",
+      });
+    }
     onClose();
   };
 
@@ -77,14 +105,24 @@ const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
             MEUS DADOS
           </Button>
 
-          {/* LOGIN/CADASTRO */}
-          <Button
-            className="w-full justify-center py-6 rounded-none bg-primary hover:bg-primary/90 text-base font-medium"
-            onClick={handleLoginSignup}
-          >
-            <LogIn className="h-5 w-5 mr-2" />
-            Login/Cadastro
-          </Button>
+          {/* LOGIN/CADASTRO ou SAIR */}
+          {isLoggedIn ? (
+            <Button
+              className="w-full justify-center py-6 rounded-none bg-destructive hover:bg-destructive/90 text-destructive-foreground text-base font-medium"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-5 w-5 mr-2" />
+              SAIR
+            </Button>
+          ) : (
+            <Button
+              className="w-full justify-center py-6 rounded-none bg-primary hover:bg-primary/90 text-base font-medium"
+              onClick={handleLoginSignup}
+            >
+              <LogIn className="h-5 w-5 mr-2" />
+              Login/Cadastro
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>
