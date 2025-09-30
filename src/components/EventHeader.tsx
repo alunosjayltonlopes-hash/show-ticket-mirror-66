@@ -57,7 +57,12 @@ const EventHeader = () => {
             <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => navigate('/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659')}>
               Home
             </Button>
-            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => setIsUserMenuOpen(true)}>
+            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => {
+              console.log('Clicando em Entre ou Cadastre-se');
+              console.log('Estado antes:', isUserMenuOpen);
+              setIsUserMenuOpen(true);
+              console.log('Estado depois:', true);
+            }}>
               Entre ou Cadastre-se
             </Button>
             <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => setIsSupportModalOpen(true)}>

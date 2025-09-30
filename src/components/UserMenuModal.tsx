@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Ticket, UserCircle2, LogIn, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface UserMenuModalProps {
   isOpen: boolean;
@@ -12,6 +13,10 @@ interface UserMenuModalProps {
 const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('UserMenuModal isOpen mudou para:', isOpen);
+  }, [isOpen]);
 
   const handleMyOrders = () => {
     console.log('Clicou em Meus Pedidos, usuário:', user);
@@ -42,8 +47,11 @@ const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm p-0 gap-0">
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      console.log('Dialog onOpenChange:', open);
+      if (!open) onClose();
+    }}>
+      <DialogContent className="max-w-sm p-0 gap-0 bg-background">
         <DialogHeader className="p-4 pb-3 border-b">
           <DialogTitle className="text-center">Meus Dados</DialogTitle>
           <Button
