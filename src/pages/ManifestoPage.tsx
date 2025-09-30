@@ -123,15 +123,37 @@ const ManifestoPage = () => {
             if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
               const parent = node.parentElement;
               if (parent) {
+                const sectionContainer = iframeDoc.createElement("div");
+                sectionContainer.className = "w-full bg-gray-100 py-8";
+                
+                // Título
+                const titleContainer = iframeDoc.createElement("div");
+                titleContainer.className = "text-center mb-6";
+                
+                const title = iframeDoc.createElement("h1");
+                title.className = "text-3xl md:text-4xl font-bold text-gray-900 mb-2";
+                title.textContent = "INGRESSOS DISPONÍVEIS";
+                
+                const subtitle = iframeDoc.createElement("p");
+                subtitle.className = "text-base md:text-lg text-gray-600";
+                subtitle.textContent = "Escolha sua categoria e garanta seu lugar!";
+                
+                titleContainer.appendChild(title);
+                titleContainer.appendChild(subtitle);
+                
+                // Container do TicketList
                 const ticketContainer = iframeDoc.createElement("div");
                 ticketContainer.id = "react-ticket-list";
                 ticketContainer.className = "w-full";
                 
+                sectionContainer.appendChild(titleContainer);
+                sectionContainer.appendChild(ticketContainer);
+                
                 parent.innerHTML = "";
-                parent.appendChild(ticketContainer);
+                parent.appendChild(sectionContainer);
                 
                 const root = createRoot(ticketContainer);
-                root.render(<TicketList key={Date.now()} />);
+                root.render(<TicketList />);
                 break;
               }
             }
