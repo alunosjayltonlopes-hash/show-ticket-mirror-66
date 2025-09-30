@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import ManifestoPage from "./pages/ManifestoPage";
 
 const queryClient = new QueryClient();
 
@@ -19,9 +20,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<ManifestoPage />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<Index />} />
+            <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<ManifestoPage />} />
+            <Route path="/original" element={<Index />} />
             {/* Legacy route for compatibility */}
             <Route path="/dashboard" element={<Dashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
