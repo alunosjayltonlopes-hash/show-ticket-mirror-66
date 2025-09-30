@@ -1,4 +1,10 @@
 [[redirects]]
+  from = "/webservices/*"
+  to = "https://www.guicheweb.com.br/webservices/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/manifesto/*"
   to = "/manifesto/:splat"
   status = 200
@@ -8,6 +14,7 @@
   to = "/index.html"
   status = 200
   force = false
+
 [[headers]]
   for = "/*"
   [headers.values]

@@ -1,3 +1,4 @@
 # Netlify/Vercel redirects for SPA
+/webservices/* https://www.guicheweb.com.br/webservices/:splat 200
 /manifesto/*   /manifesto/:splat   200
 /*    /index.html   200!
