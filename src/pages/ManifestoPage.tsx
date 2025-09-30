@@ -202,7 +202,66 @@ const ManifestoPage = () => {
                   newSection.appendChild(bloco);
                 });
 
+                // Cria rodapé fixo
+                const footer = iframeDoc.createElement('div');
+                footer.id = 'ticket-footer';
+                footer.className = 'hidden fixed bottom-0 left-0 right-0 bg-[#2d7a2d] text-white p-4 shadow-lg z-50';
+                footer.innerHTML = `
+                  <div class="max-w-2xl mx-auto flex items-center justify-between">
+                    <div>
+                      <p class="text-sm opacity-90">Total</p>
+                      <p id="footer-total" class="text-2xl font-bold">R$ 0,00</p>
+                      <p id="footer-qty" class="text-xs opacity-90">0 ingressos</p>
+                    </div>
+                    <button id="finalizar-btn" class="bg-white text-[#2d7a2d] px-6 py-3 rounded font-semibold hover:bg-gray-100 transition-colors">
+                      FINALIZAR COMPRA →
+                    </button>
+                  </div>
+                `;
+                iframeDoc.body.appendChild(footer);
+
                 // Funções de controle
+                const getTotalQty = () => {
+                  let total = 0;
+                  ingressosData.forEach(({ id }) => {
+                    const qtySpan = iframeDoc.getElementById(`qty-${id}`);
+                    if (qtySpan) {
+                      total += parseInt(qtySpan.textContent || '0');
+                    }
+                  });
+                  return total;
+                };
+
+                const getTotalPrice = () => {
+                  let total = 0;
+                  ingressosData.forEach(({ id, valor }) => {
+                    const qtySpan = iframeDoc.getElementById(`qty-${id}`);
+                    if (qtySpan) {
+                      const qty = parseInt(qtySpan.textContent || '0');
+                      total += qty * valor;
+                    }
+                  });
+                  return total;
+                };
+
+                const updateFooter = () => {
+                  const totalQty = getTotalQty();
+                  const totalPrice = getTotalPrice();
+                  const footer = iframeDoc.getElementById('ticket-footer');
+                  const footerTotal = iframeDoc.getElementById('footer-total');
+                  const footerQty = iframeDoc.getElementById('footer-qty');
+
+                  if (footer && footerTotal && footerQty) {
+                    if (totalQty > 0) {
+                      footer.classList.remove('hidden');
+                      footerTotal.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+                      footerQty.textContent = `${totalQty} ${totalQty === 1 ? 'ingresso' : 'ingressos'}`;
+                    } else {
+                      footer.classList.add('hidden');
+                    }
+                  }
+                };
+
                 const toggleSection = (id: string) => {
                   const section = iframeDoc.getElementById(`section-${id}`);
                   const icon = iframeDoc.getElementById(`icon-${id}`);
@@ -216,8 +275,16 @@ const ManifestoPage = () => {
                   const qtySpan = iframeDoc.getElementById(`qty-${id}`);
                   if (qtySpan) {
                     let qty = parseInt(qtySpan.textContent || '0');
+                    const totalQty = getTotalQty();
+                    
+                    // Se está tentando aumentar, verifica o limite global de 2
+                    if (delta > 0 && totalQty >= 2) {
+                      return; // Não permite adicionar mais
+                    }
+                    
                     qty = Math.max(0, Math.min(2, qty + delta));
                     qtySpan.textContent = qty.toString();
+                    updateFooter();
                   }
                 };
 
@@ -238,6 +305,15 @@ const ManifestoPage = () => {
                       if (id) changeQty(id, 1);
                     });
                   });
+
+                  // Event listener para o botão finalizar
+                  const finalizarBtn = iframeDoc.getElementById('finalizar-btn');
+                  if (finalizarBtn) {
+                    finalizarBtn.addEventListener('click', () => {
+                      console.log('Finalizar compra clicado');
+                      // Aqui você pode adicionar a lógica de finalização
+                    });
+                  }
                 }, 100);
 
                 // Substitui o conteúdo
