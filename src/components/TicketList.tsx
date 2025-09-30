@@ -130,31 +130,33 @@ const TicketList = () => {
           const quantity = quantities[category.id] || 0;
 
           return (
-            <div key={category.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+            <div key={category.id} className="bg-[#f5f5f5] rounded-[10px] overflow-hidden">
               {/* Header - sempre visível */}
               <button
                 onClick={() => handleCategoryClick(category.id)}
-                className="w-full px-4 py-4 flex items-center gap-3 hover:bg-gray-50 transition-colors"
+                className="w-full px-4 py-4 flex items-center gap-[14px] hover:bg-[#ececec] transition-colors"
               >
                 {/* Quadrado colorido */}
                 <div 
-                  className="w-10 h-10 rounded-lg flex-shrink-0"
+                  className="w-12 h-12 rounded-[10px] flex-shrink-0"
                   style={{ backgroundColor: category.color }}
                 />
                 
                 {/* Informações do ingresso */}
                 <div className="flex-1 flex flex-col items-start gap-1">
-                  <h3 className="font-bold text-base text-gray-800">{category.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    a partir de R$ {category.price.toFixed(2)}
+                  <h3 className="font-bold text-[17px] leading-tight text-[#2d2d2d]">
+                    {category.name}
+                  </h3>
+                  <p className="text-[14px] text-[#666666]">
+                    a partir de R$ {category.price.toFixed(2).replace('.', ',')}
                   </p>
                 </div>
 
-                {/* Ícone de expandir */}
-                <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                {/* Ícone de expandir - círculo preto */}
+                <div className="w-[34px] h-[34px] rounded-full bg-[#1a1a1a] flex items-center justify-center flex-shrink-0">
                   <ChevronDown 
                     className={cn(
-                      "h-4 w-4 text-white transition-transform",
+                      "h-4 w-4 text-white transition-transform duration-200",
                       isExpanded && "rotate-180"
                     )}
                   />
@@ -163,40 +165,40 @@ const TicketList = () => {
 
               {/* Conteúdo expansível */}
               {isExpanded && (
-                <div className="px-4 pb-4 border-t border-gray-200 bg-gray-50">
+                <div className="px-4 pb-4 border-t border-[#e0e0e0] bg-[#fafafa]">
                   <div className="pt-4 space-y-4">
                     {/* Seletor de quantidade */}
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-700">Quantidade:</span>
+                      <span className="text-[15px] font-semibold text-[#2d2d2d]">Quantidade:</span>
                       <div className="flex items-center gap-3">
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-9 w-9 rounded-lg border-gray-300"
+                          className="h-9 w-9 rounded-lg border-[#d0d0d0] bg-white hover:bg-[#f5f5f5]"
                           onClick={() => handleQuantityChange(category.id, quantity - 1)}
                           disabled={quantity <= 0}
                         >
-                          <Minus className="h-4 w-4" />
+                          <Minus className="h-4 w-4 text-[#2d2d2d]" />
                         </Button>
-                        <span className="font-bold text-xl w-10 text-center text-gray-900">{quantity}</span>
+                        <span className="font-bold text-xl w-10 text-center text-[#2d2d2d]">{quantity}</span>
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-9 w-9 rounded-lg border-gray-300"
+                          className="h-9 w-9 rounded-lg border-[#d0d0d0] bg-white hover:bg-[#f5f5f5]"
                           onClick={() => handleQuantityChange(category.id, quantity + 1)}
                           disabled={quantity >= 2}
                         >
-                          <Plus className="h-4 w-4" />
+                          <Plus className="h-4 w-4 text-[#2d2d2d]" />
                         </Button>
                       </div>
                     </div>
 
                     {/* Subtotal */}
                     {quantity > 0 && (
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-                        <span className="text-sm font-medium text-gray-600">Subtotal:</span>
-                        <span className="font-bold text-xl text-gray-900">
-                          R$ {(category.price * quantity).toFixed(2)}
+                      <div className="flex items-center justify-between pt-3 border-t border-[#e0e0e0]">
+                        <span className="text-[15px] font-medium text-[#666666]">Subtotal:</span>
+                        <span className="font-bold text-xl text-[#2d2d2d]">
+                          R$ {(category.price * quantity).toFixed(2).replace('.', ',')}
                         </span>
                       </div>
                     )}
