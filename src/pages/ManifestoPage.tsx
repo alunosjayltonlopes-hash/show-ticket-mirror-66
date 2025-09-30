@@ -4,7 +4,7 @@ import TicketList from "@/components/TicketList";
 import SupportModal from "@/components/SupportModal";
 import UserMenuModal from "@/components/UserMenuModal";
 import { useAuth } from "@/hooks/useAuth";
-
+import manifestoHtml from "@/Manifesto/manifesto_index.html.html?raw";
 const ManifestoPage = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
@@ -414,7 +414,7 @@ const ManifestoPage = () => {
 
       <iframe
         ref={iframeRef}
-        src="/manifesto-original.html"
+        srcDoc={manifestoHtml}
         className="w-full h-screen border-0"
         title="Manifesto Musical"
         sandbox="allow-scripts allow-same-origin allow-forms"
