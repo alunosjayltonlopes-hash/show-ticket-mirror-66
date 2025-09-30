@@ -1,13 +1,7 @@
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Minus, Plus, Ticket, Info } from "lucide-react";
+import { ChevronRight, Minus, Plus, Ticket, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 interface SubTicket {
   id: string;
@@ -76,6 +70,14 @@ const ticketCategories: TicketCategory[] = [
 const TicketList = () => {
   const [couponCode, setCouponCode] = useState("");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [categoryId]: !prev[categoryId]
+    }));
+  };
 
   const handleQuantityChange = (subTicketId: string, delta: number) => {
     setQuantities(prev => {
@@ -125,90 +127,83 @@ const TicketList = () => {
       </div>
 
       {/* Lista de Ingressos */}
-      <Accordion type="single" collapsible className="space-y-4">
-        {ticketCategories.map((category) => (
-          <AccordionItem 
-            key={category.id} 
-            value={category.id}
-            className="border-0"
-          >
-            <div className="bg-[#e8e8e8] rounded-lg overflow-hidden data-[state=open]:bg-[#6b6b6b] transition-colors">
-              <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-[#d8d8d8] data-[state=open]:hover:bg-[#6b6b6b] transition-colors [&[data-state=open]]:text-white [&>svg]:hidden">
-                <div className="flex items-center gap-3 w-full">
-                  {/* Ícone colorido */}
-                  <div 
-                    className="w-6 h-6 rounded flex-shrink-0"
-                    style={{ backgroundColor: category.color }}
-                  />
-                  
-                  {/* Nome e Badge */}
-                  <div className="flex items-center gap-2 flex-1">
-                    <span className="font-semibold text-base">{category.name}</span>
-                    {category.badge && (
-                      <span className="bg-[#0066cc] text-white text-xs px-2 py-0.5 rounded font-semibold">
-                        {category.badge}
-                      </span>
-                    )}
-                  </div>
-                  
-                  {/* Preço */}
-                  <span className="text-sm mr-2">
-                    a partir de R$ {category.startingPrice.toFixed(2).replace('.', ',')}
+      <div className="space-y-4">
+        {ticketCategories.map((category) => {
+          const isExpanded = expandedCategories[category.id];
+          
+          return (
+            <div key={category.id} className="bg-white shadow rounded-lg overflow-hidden">
+              {/* Cabeçalho */}
+              <button
+                onClick={() => toggleCategory(category.id)}
+                className="w-full flex justify-between items-center p-4 text-white font-semibold text-lg transition-colors"
+                style={{ backgroundColor: category.color }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">
+                    {category.id === 'arena' && '🎫'}
+                    {category.id === 'area-vip' && '👑'}
+                    {category.id === 'open-bar' && '🍻'}
+                    {category.id === 'premium' && '🍽️'}
                   </span>
-                  
-                  {/* Ícone customizado */}
-                  <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
-                    <ChevronDown className="w-4 h-4 text-white transition-transform duration-200 [&[data-state=open]]:rotate-180" />
-                  </div>
+                  <span>{category.name}</span>
+                  {category.badge && (
+                    <span className="bg-white/20 text-white text-xs px-2 py-1 rounded">
+                      {category.badge}
+                    </span>
+                  )}
                 </div>
-              </AccordionTrigger>
-              
-              <AccordionContent className="px-0 pb-0">
-                <div className="bg-white">
-                  {category.subTickets.map((subTicket, index) => {
+                <span className="text-2xl font-bold">
+                  {isExpanded ? '−' : '+'}
+                </span>
+              </button>
+
+              {/* Conteúdo expandido */}
+              {isExpanded && (
+                <div className="p-4 space-y-4">
+                  {category.subTickets.map((subTicket) => {
                     const qty = quantities[subTicket.id] || 0;
                     
                     return (
-                      <div 
-                        key={subTicket.id}
-                        className={cn(
-                          "px-4 py-4 border-t border-gray-200",
-                          index === 0 && "border-t-0"
-                        )}
-                      >
+                      <div key={subTicket.id} className="border-b border-gray-200 last:border-b-0 pb-4 last:pb-0">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
-                            {/* Nome do ingresso com badge e info */}
+                            {/* Nome do ingresso */}
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium text-sm text-gray-900">
-                                Ingresso: <span className="font-semibold">{subTicket.name}</span>
-                              </span>
+                              <strong className="text-gray-900">Ingresso:</strong>
+                              <span className="text-gray-900">{subTicket.name}</span>
                               {subTicket.type === "Meia" && (
-                                <Info className="w-4 h-4 text-[#0066cc] cursor-pointer" />
+                                <Info className="w-4 h-4 text-blue-600 cursor-pointer" />
                               )}
                               {subTicket.badge && (
-                                <span className="bg-[#0066cc] text-white text-xs px-2 py-0.5 rounded font-semibold">
+                                <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded font-semibold">
                                   {subTicket.badge}
                                 </span>
                               )}
                             </div>
                             
                             {/* Lote */}
-                            <p className="text-xs text-gray-600 mb-1">
-                              Lote: <span className="font-medium">{subTicket.lote}</span>
-                            </p>
+                            <div className="text-sm text-gray-600 mb-1">
+                              <span>Lote: {subTicket.lote}</span>
+                            </div>
                             
                             {/* Valor */}
-                            <p className="text-xs text-[#0066cc] font-medium">
-                              Valor: R$ {subTicket.price.toFixed(2).replace('.', ',')} + taxa
-                              {subTicket.hasFoodDrink && (
-                                <>
-                                  {" "}
-                                  <Ticket className="inline w-3 h-3" />
-                                  <span className="ml-1">🍴</span>
-                                </>
-                              )}
-                            </p>
+                            <div className="text-sm font-bold text-gray-900 mb-1">
+                              R$ {subTicket.price.toFixed(2).replace('.', ',')} + taxa
+                            </div>
+
+                            {/* Open Bar/Food info */}
+                            {subTicket.hasFoodDrink && category.id === 'open-bar' && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                Open Bar: Água, Cerveja e Refrigerante
+                              </p>
+                            )}
+                            {subTicket.hasFoodDrink && category.id === 'premium' && (
+                              <p className="text-xs text-gray-700 mt-1">
+                                Open Bar: Cerveja, Água, Refrigerante, Vodka, Gin, Tônica, Whisky e Energético<br/>
+                                Open Food: Pizzas, Anéis de cebola, Pastéis variados, Bolinho de queijo e bacalhau, Mini sanduíches, Bruschetta, Hambúrguer, Massa 4 queijos, Risoto de alho poró, Brigadeiro, Mini churros.
+                              </p>
+                            )}
                           </div>
                           
                           {/* Controles de quantidade */}
@@ -235,11 +230,11 @@ const TicketList = () => {
                     );
                   })}
                 </div>
-              </AccordionContent>
+              )}
             </div>
-          </AccordionItem>
-        ))}
-      </Accordion>
+          );
+        })}
+      </div>
 
       {/* Resumo fixo na parte inferior */}
       {hasSelectedTickets && (
