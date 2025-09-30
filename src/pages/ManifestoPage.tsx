@@ -136,26 +136,27 @@ const ManifestoPage = () => {
                 // Cria os blocos de ingressos
                 ingressosData.forEach(({ id, nome, valor, cor }) => {
                   const bloco = iframeDoc.createElement('div');
-                  bloco.className = 'bg-white shadow rounded';
+                  bloco.className = 'bg-gray-200 shadow rounded';
                   
                   const button = iframeDoc.createElement('button');
-                  button.className = 'w-full flex items-center justify-between p-4';
+                  button.className = 'w-full flex items-center justify-between p-3';
                   button.onclick = () => toggleSection(id);
                   
                   const leftDiv = iframeDoc.createElement('div');
-                  leftDiv.className = 'flex items-center space-x-3';
+                  leftDiv.className = 'flex items-center space-x-2';
                   
                   const colorBox = iframeDoc.createElement('div');
                   colorBox.className = 'w-4 h-4 rounded';
                   colorBox.style.backgroundColor = cor;
                   
                   const textDiv = iframeDoc.createElement('div');
+                  textDiv.className = 'text-left';
                   const title = iframeDoc.createElement('h2');
-                  title.className = 'font-semibold text-lg';
+                  title.className = 'font-semibold text-base';
                   title.textContent = nome;
                   
                   const price = iframeDoc.createElement('p');
-                  price.className = 'text-sm text-gray-500';
+                  price.className = 'text-sm text-gray-600';
                   price.textContent = `a partir de R$ ${valor},00`;
                   
                   textDiv.appendChild(title);
@@ -174,13 +175,14 @@ const ManifestoPage = () => {
                   // Seção expansível
                   const section = iframeDoc.createElement('div');
                   section.id = `section-${id}`;
-                  section.className = 'hidden px-4 pb-4 space-y-2';
+                  section.className = 'hidden px-3 pb-4 space-y-3';
                   
                   const detailsDiv = iframeDoc.createElement('div');
+                  detailsDiv.className = 'text-left space-y-1';
                   detailsDiv.innerHTML = `
-                    <p><strong>Ingresso Inteiro</strong></p>
-                    <p>Lote Atual</p>
-                    <p class="font-semibold">R$ ${valor},00 + taxa</p>
+                    <p class="text-sm"><strong>Ingresso:</strong> ${nome}</p>
+                    <p class="text-sm"><strong>Lote:</strong> LOTE EXTRA</p>
+                    <p class="text-sm"><strong>Valor:</strong> R$ ${valor},00 + taxa R$ 0</p>
                   `;
                   
                   const qtyDiv = iframeDoc.createElement('div');
@@ -188,9 +190,9 @@ const ManifestoPage = () => {
                   qtyDiv.innerHTML = `
                     <label for="qty-${id}" class="text-sm font-medium">Quantidade:</label>
                     <div class="flex items-center space-x-2">
-                      <button class="px-2 py-1 bg-gray-200 rounded minus-btn" data-id="${id}">-</button>
+                      <button class="px-2 py-1 bg-gray-300 rounded minus-btn" data-id="${id}">-</button>
                       <span id="qty-${id}" class="w-6 text-center">0</span>
-                      <button class="px-2 py-1 bg-gray-200 rounded plus-btn" data-id="${id}">+</button>
+                      <button class="px-2 py-1 bg-gray-300 rounded plus-btn" data-id="${id}">+</button>
                     </div>
                   `;
                   
