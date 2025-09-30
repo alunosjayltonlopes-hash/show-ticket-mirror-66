@@ -23,6 +23,7 @@ const App = () => (
             <Route path="/" element={<ManifestoPage />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<ManifestoPage />} />
+            <Route path="/br/*" element={<ManifestoPage />} />
             <Route path="/original" element={<Index />} />
             {/* Legacy route for compatibility */}
             <Route path="/dashboard" element={<Dashboard />} />
