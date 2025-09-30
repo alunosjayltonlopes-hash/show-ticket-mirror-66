@@ -127,11 +127,20 @@ const ManifestoPage = () => {
                 ticketContainer.id = "react-ticket-list";
                 ticketContainer.className = "max-w-7xl mx-auto px-4 py-12";
                 
+                // Adiciona título antes da lista
+                const titleDiv = iframeDoc.createElement("div");
+                titleDiv.className = "text-center mb-8";
+                titleDiv.innerHTML = `
+                  <h2 class="text-4xl font-bold text-gray-900 mb-2">INGRESSOS DISPONÍVEIS</h2>
+                  <p class="text-gray-600">Escolha sua categoria e garanta seu lugar!</p>
+                `;
+                
                 parent.innerHTML = "";
+                parent.appendChild(titleDiv);
                 parent.appendChild(ticketContainer);
                 
                 const root = createRoot(ticketContainer);
-                root.render(<TicketList />);
+                root.render(<TicketList key={Date.now()} />);
                 break;
               }
             }
