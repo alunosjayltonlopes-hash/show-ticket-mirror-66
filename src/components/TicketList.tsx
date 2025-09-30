@@ -61,7 +61,7 @@ const TicketList = () => {
           const qty = quantities[category.id] || 0;
           
           return (
-            <div key={category.id} className="bg-white shadow rounded overflow-hidden">
+            <div key={category.id} className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
               {/* Cabeçalho */}
               <button
                 onClick={() => toggleCategory(category.id)}
@@ -76,9 +76,10 @@ const TicketList = () => {
                     <h2 className="font-semibold text-base sm:text-lg text-gray-900">
                       {category.name}
                     </h2>
-                    <p className="text-xs sm:text-sm text-gray-500">
-                      a partir de R$ {category.price.toFixed(2).replace('.', ',')}
-                    </p>
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: category.color }} />
+                      <span>a partir de R$ {category.price.toFixed(2).replace('.', ',')}</span>
+                    </div>
                   </div>
                 </div>
                 <span className="text-xl sm:text-2xl font-bold text-gray-900 flex-shrink-0">
