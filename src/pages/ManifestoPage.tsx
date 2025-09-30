@@ -27,7 +27,7 @@ const ManifestoPage = () => {
 
         // Função otimizada para remover elementos indesejados
         const removeUnwantedElements = () => {
-          // Injeta CSS apenas para suavizar aparição do rodapé
+          // Injeta CSS para melhorar renderização
           const optimizationStyles = iframeDoc.createElement('style');
           optimizationStyles.textContent = `
             /* Melhora renderização de fontes */
@@ -111,6 +111,9 @@ const ManifestoPage = () => {
             if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
               const parent = node.parentElement;
               if (parent) {
+                // Esconde imediatamente o conteúdo antigo
+                parent.style.opacity = '0';
+                parent.style.transition = 'none';
                 // Cria o novo container com o design fornecido
                 const newSection = iframeDoc.createElement("div");
                 newSection.className = "max-w-2xl mx-auto space-y-4 p-4";
@@ -290,37 +293,39 @@ const ManifestoPage = () => {
                   }
                 };
 
-                // Event listeners para os botões
-                setTimeout(() => {
-                  iframeDoc.querySelectorAll('.minus-btn').forEach((btn) => {
-                    btn.addEventListener('click', (e) => {
-                      e.stopPropagation();
-                      const id = (btn as HTMLElement).dataset.id;
-                      if (id) changeQty(id, -1);
-                    });
+                // Event listeners para os botões (execução imediata para performance)
+                iframeDoc.querySelectorAll('.minus-btn').forEach((btn) => {
+                  btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = (btn as HTMLElement).dataset.id;
+                    if (id) changeQty(id, -1);
                   });
-                  
-                  iframeDoc.querySelectorAll('.plus-btn').forEach((btn) => {
-                    btn.addEventListener('click', (e) => {
-                      e.stopPropagation();
-                      const id = (btn as HTMLElement).dataset.id;
-                      if (id) changeQty(id, 1);
-                    });
+                });
+                
+                iframeDoc.querySelectorAll('.plus-btn').forEach((btn) => {
+                  btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = (btn as HTMLElement).dataset.id;
+                    if (id) changeQty(id, 1);
                   });
+                });
 
-                  // Event listener para o botão finalizar
-                  const finalizarBtn = iframeDoc.getElementById('finalizar-btn');
-                  if (finalizarBtn) {
-                    finalizarBtn.addEventListener('click', () => {
-                      console.log('Finalizar compra clicado');
-                      // Aqui você pode adicionar a lógica de finalização
-                    });
-                  }
-                }, 100);
+                // Event listener para o botão finalizar
+                const finalizarBtn = iframeDoc.getElementById('finalizar-btn');
+                if (finalizarBtn) {
+                  finalizarBtn.addEventListener('click', () => {
+                    console.log('Finalizar compra clicado');
+                    // Aqui você pode adicionar a lógica de finalização
+                  });
+                }
 
                 // Substitui o conteúdo
                 parent.innerHTML = "";
                 parent.appendChild(newSection);
+                
+                // Mostra o novo conteúdo imediatamente
+                parent.style.opacity = '1';
+                parent.style.transition = 'opacity 0.2s ease-in';
                 break;
               }
             }
