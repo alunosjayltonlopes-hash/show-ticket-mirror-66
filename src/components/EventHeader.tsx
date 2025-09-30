@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import NotificationModal from "./NotificationModal";
 import SettingsModal from "./SettingsModal";
 import SupportModal from "./SupportModal";
+import UserMenuModal from "./UserMenuModal";
 // import eventBanner from "@/assets/event-banner.jpg";
 const eventBanner = "/lovable-uploads/98e03c32-dc48-4f1d-aa0a-7aae31d6e317.png";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,6 +17,7 @@ const EventHeader = () => {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -52,30 +54,16 @@ const EventHeader = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2 lg:gap-4 ml-auto">
-            {user ? (
-              <>
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToTickets}>
-                  Meus ingressos
-                </Button>
-                <span className="text-xs sm:text-sm text-muted-foreground">{user.email}</span>
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={async () => {
-                  await signOut();
-                  navigate('/');
-                }}>
-                  Sair
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToTickets}>
-                  Meus ingressos
-                </Button>
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={goToLogin}>
-                  Entrar
-                </Button>
-              </>
-            )}
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => navigate('/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659')}>
+              Home
+            </Button>
+            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => setIsUserMenuOpen(true)}>
+              Entre ou Cadastre-se
+            </Button>
+            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => setIsSupportModalOpen(true)}>
+              Ajuda
+            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsUserMenuOpen(true)}>
               <User className="h-4 w-4" />
             </Button>
           </div>
@@ -113,60 +101,28 @@ const EventHeader = () => {
 
                   {/* Menu Items */}
                   <div className="flex-1 p-4 space-y-2">
-                    {/* Principais */}
+                  {/* Principais */}
                     <div className="space-y-1">
                       <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                        Principal
+                        Menu
                       </div>
                       
                       <Button 
                         variant="ghost" 
                         className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
-                        onClick={goToTickets}
+                        onClick={() => navigate('/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659')}
                       >
-                        <Ticket className="h-4 w-4" />
-                        Meus ingressos
+                        <MapPin className="h-4 w-4" />
+                        Home
                       </Button>
 
                       <Button 
                         variant="ghost" 
                         className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
-                        onClick={() => setIsNotificationModalOpen(true)}
+                        onClick={() => setIsUserMenuOpen(true)}
                       >
-                        <Bell className="h-4 w-4" />
-                        Notificações
-                      </Button>
-                    </div>
-
-                    {/* Evento Atual */}
-                    <div className="space-y-1 pt-4">
-                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                        Evento Atual
-                      </div>
-                      
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
-                        disabled
-                      >
-                        <Share2 className="h-4 w-4" />
-                        Compartilhar
-                      </Button>
-                    </div>
-
-                    {/* Configurações */}
-                    <div className="space-y-1 pt-4">
-                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                        Configurações
-                      </div>
-                      
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start gap-3 h-11 border border-transparent hover:border-border hover:bg-accent/50"
-                        onClick={() => setIsSettingsModalOpen(true)}
-                      >
-                        <Settings className="h-4 w-4" />
-                        Configurações
+                        <User className="h-4 w-4" />
+                        Entre ou Cadastre-se
                       </Button>
 
                       <Button 
@@ -175,35 +131,18 @@ const EventHeader = () => {
                         onClick={() => setIsSupportModalOpen(true)}
                       >
                         <HelpCircle className="h-4 w-4" />
-                        Ajuda & Suporte
+                        Ajuda
                       </Button>
                     </div>
                   </div>
 
                   {/* Footer do Menu */}
                   <div className="p-4 border-t bg-muted/20">
-                    {user ? (
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start gap-3 h-11 text-destructive hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20"
-                        onClick={async () => {
-                          await signOut();
-                          navigate('/');
-                        }}
-                      >
-                        <LogOut className="h-4 w-4" />
-                        Sair
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant="default" 
-                        className="w-full justify-start gap-3 h-11"
-                        onClick={goToLogin}
-                      >
-                        <User className="h-4 w-4" />
-                        Entrar
-                      </Button>
-                    )}
+                    <div className="flex gap-2 justify-center">
+                      <img src="https://flagcdn.com/w40/br.png" alt="Português" className="h-6 w-auto" />
+                      <img src="https://flagcdn.com/w40/us.png" alt="English" className="h-6 w-auto opacity-50" />
+                      <img src="https://flagcdn.com/w40/es.png" alt="Español" className="h-6 w-auto opacity-50" />
+                    </div>
                   </div>
                 </div>
               </SheetContent>
@@ -263,6 +202,10 @@ const EventHeader = () => {
       <SupportModal 
         isOpen={isSupportModalOpen} 
         onClose={() => setIsSupportModalOpen(false)} 
+      />
+      <UserMenuModal 
+        isOpen={isUserMenuOpen} 
+        onClose={() => setIsUserMenuOpen(false)} 
       />
     </div>
   );
