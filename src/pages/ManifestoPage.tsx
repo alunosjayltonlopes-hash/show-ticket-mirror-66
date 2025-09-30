@@ -10,38 +10,33 @@ const ManifestoPage = () => {
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe) return;
 
+    let cleanupExecuted = false;
+
     iframe.onload = () => {
       try {
         const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-        if (!iframeDoc) return;
+        if (!iframeDoc || cleanupExecuted) return;
 
-        // Função para remover elementos indesejados
+        cleanupExecuted = true;
+
+        // Função otimizada para remover elementos indesejados
         const removeUnwantedElements = () => {
-          // Remove todos os links que redirecionam para guicheweb.com.br e outros sites
-          const allLinks = iframeDoc.querySelectorAll('a[href]');
+          // Remove links externos de forma mais eficiente
+          const allLinks = iframeDoc.querySelectorAll('a[href*="guicheweb"], a[href^="http"], a[href^="/"]');
           allLinks.forEach((link) => {
             const htmlLink = link as HTMLAnchorElement;
-            const href = htmlLink.getAttribute('href') || '';
-            
-            // Remove links externos (http/https) e links internos do guicheweb
-            if (
-              href.includes('guicheweb.com.br') ||
-              href.includes('http://') ||
-              href.includes('https://') ||
-              href.startsWith('/')
-            ) {
-              htmlLink.removeAttribute('href');
-              htmlLink.style.cursor = 'default';
-              htmlLink.style.pointerEvents = 'none';
-            }
+            htmlLink.removeAttribute('href');
+            htmlLink.style.cursor = 'default';
+            htmlLink.style.pointerEvents = 'none';
           });
 
-          // Remove formulários de busca e navegação
+          // Previne envio de formulários
           const forms = iframeDoc.querySelectorAll('form');
           forms.forEach((form) => {
             form.onsubmit = (e) => {
@@ -50,83 +45,27 @@ const ManifestoPage = () => {
             };
           });
 
-          // Remove chat de suporte e widgets flutuantes - MAIS AGRESSIVO
-          const chatSelectors = [
-            '[id*="chat"]',
-            '[class*="chat"]',
-            '[id*="Chat"]',
-            '[class*="Chat"]',
-            '[id*="support"]',
-            '[class*="support"]',
-            '[id*="Support"]',
-            '[class*="Support"]',
-            '[id*="widget"]',
-            '[class*="widget"]',
-            '[id*="Widget"]',
-            '[class*="Widget"]',
-            '[id*="messenger"]',
-            '[class*="messenger"]',
-            '[id*="Messenger"]',
-            '[class*="Messenger"]',
-            '[id*="whatsapp"]',
-            '[class*="whatsapp"]',
-            '[id*="WhatsApp"]',
-            '[class*="WhatsApp"]',
-            '[id*="wpp"]',
-            '[class*="wpp"]',
-            'iframe[src*="chat"]',
-            'iframe[src*="widget"]',
-            'iframe[src*="whatsapp"]',
-            'iframe[src*="messenger"]',
-            'div[style*="position: fixed"]',
-            'div[style*="z-index: 999"]',
-            'div[style*="z-index: 9999"]',
-            '#crisp-chatbox',
-            '#intercom-container',
-            '#drift-widget',
-            '#hubspot-messages-iframe-container',
-            '.crisp-client',
-            '.intercom-launcher',
-            '.drift-frame-controller'
-          ];
-          
-          chatSelectors.forEach(selector => {
-            try {
-              const elements = iframeDoc.querySelectorAll(selector);
-              elements.forEach(element => {
-                console.log('Removendo elemento:', element);
-                element.remove();
-              });
-            } catch (e) {
-              console.warn('Erro ao remover elemento:', selector, e);
-            }
-          });
+          // Remove widgets de chat de forma mais eficiente (seletor único)
+          const chatElements = iframeDoc.querySelectorAll(
+            '[id*="chat"], [class*="chat"], [id*="widget"], [class*="widget"], ' +
+            '[id*="messenger"], [class*="messenger"], [id*="whatsapp"], [class*="whatsapp"], ' +
+            'iframe[src*="chat"], iframe[src*="widget"], div[style*="z-index: 999"]'
+          );
+          chatElements.forEach(el => el.remove());
 
-          // Remove scripts de chat
-          const scripts = iframeDoc.querySelectorAll('script');
-          scripts.forEach(script => {
-            const src = script.getAttribute('src') || '';
-            const innerHTML = script.innerHTML || '';
-            if (
-              src.includes('chat') || 
-              src.includes('widget') || 
-              src.includes('crisp') || 
-              src.includes('intercom') ||
-              innerHTML.includes('chat') ||
-              innerHTML.includes('widget')
-            ) {
-              console.log('Removendo script de chat:', src || 'inline');
-              script.remove();
-            }
-          });
+          // Remove scripts de chat de forma otimizada
+          const scripts = iframeDoc.querySelectorAll('script[src*="chat"], script[src*="widget"], script[src*="crisp"], script[src*="intercom"]');
+          scripts.forEach(script => script.remove());
         };
 
-        // Liga eventos para menu dentro do iframe (Entre/Cadastre-se, Ajuda, Home)
+        // Função otimizada para adicionar handlers de menu
         const attachMenuHandlers = () => {
-          const all = Array.from(iframeDoc.querySelectorAll('a')) as HTMLElement[];
-          all.forEach((el) => {
+          // Busca apenas links que ainda não foram processados
+          const links = Array.from(iframeDoc.querySelectorAll('a:not([data-wired])')) as HTMLElement[];
+          
+          links.forEach((el) => {
             const text = (el.textContent || '').trim().toLowerCase();
-            if (!text || el.getAttribute('data-wired') === '1') return;
+            if (!text) return;
 
             const makeButton = (handler: (e: Event) => void) => {
               el.setAttribute('data-wired', '1');
@@ -135,12 +74,14 @@ const ManifestoPage = () => {
               el.style.cursor = 'pointer';
               el.setAttribute('role', 'button');
               el.setAttribute('tabindex', '0');
-              el.addEventListener('click', (e) => { e.preventDefault(); handler(e); });
-              el.addEventListener('keydown', (e: any) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(e); } });
+              el.addEventListener('click', (e) => { 
+                e.preventDefault(); 
+                e.stopPropagation();
+                handler(e); 
+              }, { passive: false });
             };
 
             if (text.includes('entre') || text.includes('cadastre') || text.includes('olá')) {
-              // Se o usuário estiver logado, substitui o texto
               if (user) {
                 const displayName = user.email?.split('@')[0] || user.email || 'Usuário';
                 el.textContent = `Olá, ${displayName}`;
@@ -149,73 +90,103 @@ const ManifestoPage = () => {
             } else if (text.includes('ajuda')) {
               makeButton(() => setIsSupportOpen(true));
             } else if (text === 'home' || text.includes('home')) {
-              // manter na mesma página
               makeButton(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
             }
           });
         };
 
-        // Executa imediatamente
-        removeUnwantedElements();
-        attachMenuHandlers();
+        // Procura e substitui a seção de ingressos de forma otimizada
+        const replaceTicketSection = () => {
+          const walker = iframeDoc.createTreeWalker(
+            iframeDoc.body,
+            NodeFilter.SHOW_TEXT,
+            null
+          );
 
-        // Executa novamente após um delay para pegar elementos carregados dinamicamente
-        setTimeout(() => { removeUnwantedElements(); attachMenuHandlers(); }, 500);
-        setTimeout(() => { removeUnwantedElements(); attachMenuHandlers(); }, 1000);
-        setTimeout(() => { removeUnwantedElements(); attachMenuHandlers(); }, 2000);
-
-        // Observa mudanças no DOM para remover widgets que aparecem depois
-        const observer = new MutationObserver(() => {
-          removeUnwantedElements();
-          attachMenuHandlers();
-        });
-
-        observer.observe(iframeDoc.body, {
-          childList: true,
-          subtree: true
-        });
-
-        // Procura pela seção "INGRESSOS ESGOTADOS" e substitui pelo TicketList
-        const walker = iframeDoc.createTreeWalker(
-          iframeDoc.body,
-          NodeFilter.SHOW_TEXT,
-          null
-        );
-
-        let node;
-        while ((node = walker.nextNode())) {
-          if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
-            const parent = node.parentElement;
-            if (parent) {
-              // Cria um container para o React
-              const ticketContainer = iframeDoc.createElement("div");
-              ticketContainer.id = "react-ticket-list";
-              ticketContainer.className = "max-w-7xl mx-auto px-4 py-12";
-              
-              parent.innerHTML = "";
-              parent.appendChild(ticketContainer);
-              
-              // Renderiza o componente React dentro do iframe
-              const root = createRoot(ticketContainer);
-              root.render(<TicketList />);
-              break;
+          let node;
+          while ((node = walker.nextNode())) {
+            if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
+              const parent = node.parentElement;
+              if (parent) {
+                const ticketContainer = iframeDoc.createElement("div");
+                ticketContainer.id = "react-ticket-list";
+                ticketContainer.className = "max-w-7xl mx-auto px-4 py-12";
+                
+                parent.innerHTML = "";
+                parent.appendChild(ticketContainer);
+                
+                const root = createRoot(ticketContainer);
+                root.render(<TicketList />);
+                break;
+              }
             }
           }
-        }
+        };
+
+        // Executa limpeza inicial imediatamente
+        removeUnwantedElements();
+        attachMenuHandlers();
+        replaceTicketSection();
+
+        // Observer otimizado com debounce
+        let observerTimeout: NodeJS.Timeout;
+        const debouncedHandler = () => {
+          clearTimeout(observerTimeout);
+          observerTimeout = setTimeout(() => {
+            removeUnwantedElements();
+            attachMenuHandlers();
+          }, 300);
+        };
+
+        const observer = new MutationObserver(debouncedHandler);
+        
+        // Observa apenas mudanças relevantes
+        observer.observe(iframeDoc.body, {
+          childList: true,
+          subtree: true,
+          attributes: false, // Não observa mudanças de atributos
+          characterData: false // Não observa mudanças de texto
+        });
+
+        // Para o observer após 5 segundos (quando o conteúdo já estiver estável)
+        setTimeout(() => {
+          observer.disconnect();
+          console.log('Observer desconectado - carregamento completo');
+        }, 5000);
+
+        // Site carregado
+        setIsLoading(false);
+
+        return () => {
+          observer.disconnect();
+          clearTimeout(observerTimeout);
+        };
       } catch (error) {
         console.error("Erro ao manipular iframe:", error);
+        setIsLoading(false);
       }
     };
-  }, []);
+  }, [user]);
 
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-screen w-full relative">
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground">Carregando evento...</p>
+          </div>
+        </div>
+      )}
+
       <iframe
         ref={iframeRef}
         src="/manifesto-original.html"
         className="w-full h-screen border-0"
         title="Manifesto Musical"
         sandbox="allow-scripts allow-same-origin allow-forms"
+        loading="eager"
       />
 
       {/* Modais controlados fora do iframe */}
