@@ -25,12 +25,27 @@ const ManifestoPage = () => {
 
         cleanupExecuted = true;
 
-        // Função otimizada para remover elementos indesejados
+        // Função otimizada para remover elementos indesejados e scripts pesados
         const removeUnwantedElements = () => {
+          // Remove scripts de tracking IMEDIATAMENTE para evitar execução
+          const trackingScripts = iframeDoc.querySelectorAll(
+            'script[src*="facebook"], script[src*="fbevents"], script[src*="clarity"], ' +
+            'script[src*="criteo"], script[src*="google-analytics"], script[src*="googletagmanager"], ' +
+            'script[src*="gtm"], script[src*="analytics"], noscript'
+          );
+          trackingScripts.forEach(script => script.remove());
+
+          // Remove scripts inline de tracking (GTM, Facebook, etc)
+          const inlineScripts = Array.from(iframeDoc.querySelectorAll('script:not([src])')).filter((script: any) => {
+            const content = script.textContent || '';
+            return content.includes('fbq') || content.includes('gtag') || content.includes('google_tag_manager') || 
+                   content.includes('clarity') || content.includes('criteo');
+          });
+          inlineScripts.forEach(script => script.remove());
+
           // Injeta CSS para melhorar renderização
           const optimizationStyles = iframeDoc.createElement('style');
           optimizationStyles.textContent = `
-            /* Melhora renderização de fontes */
             * {
               -webkit-font-smoothing: antialiased;
               -moz-osx-font-smoothing: grayscale;
@@ -42,22 +57,12 @@ const ManifestoPage = () => {
             iframeDoc.head.appendChild(optimizationStyles);
           }
 
-          // Mantendo links do ORIGINAL; não desabilitar para preservar o fluxo
-          // (links continuam funcionando dentro do iframe)
-
-          // Mantendo formulários do ORIGINAL; não bloquear envio para preservar o script
-
-          // Remove widgets de chat de forma mais eficiente (seletor único)
+          // Remove widgets de chat
           const chatElements = iframeDoc.querySelectorAll(
             '[id*="chat"], [class*="chat"], [id*="widget"], [class*="widget"], ' +
-            '[id*="messenger"], [class*="messenger"], [id*="whatsapp"], [class*="whatsapp"], ' +
-            'iframe[src*="chat"], iframe[src*="widget"], div[style*="z-index: 999"]'
+            '[id*="messenger"], [class*="messenger"], [id*="whatsapp"], [class*="whatsapp"]'
           );
           chatElements.forEach(el => el.remove());
-
-          // Remove scripts de chat de forma otimizada
-          const scripts = iframeDoc.querySelectorAll('script[src*="chat"], script[src*="widget"], script[src*="crisp"], script[src*="intercom"]');
-          scripts.forEach(script => script.remove());
         };
 
         // Função otimizada para adicionar handlers de menu
@@ -99,32 +104,58 @@ const ManifestoPage = () => {
 
         // Procura e substitui a seção de ingressos de forma otimizada
         const replaceTicketSection = () => {
-          // Busca pela seção que contém "INGRESSOS ESGOTADOS"
-          const walker = iframeDoc.createTreeWalker(
-            iframeDoc.body,
-            NodeFilter.SHOW_TEXT,
-            null
-          );
+          // Busca otimizada: procura elementos que possam conter o texto
+          const allElements = iframeDoc.querySelectorAll('div, section, article, main, span, p, h1, h2, h3');
+          let targetElement = null;
+          
+          for (const element of Array.from(allElements)) {
+            if ((element as HTMLElement).textContent?.includes("INGRESSOS ESGOTADOS")) {
+              targetElement = element as HTMLElement;
+              break;
+            }
+          }
 
-          let node;
-          while ((node = walker.nextNode())) {
-            if (node.textContent?.includes("INGRESSOS ESGOTADOS")) {
-              const parent = node.parentElement;
-              if (parent) {
-                // Esconde imediatamente o conteúdo antigo
-                parent.style.opacity = '0';
-                parent.style.transition = 'none';
-                // Cria o novo container com o design fornecido
-                const newSection = iframeDoc.createElement("div");
-                newSection.className = "max-w-2xl mx-auto space-y-4 p-4";
-                newSection.id = "ingressos-section";
+          if (targetElement) {
+            const parent = targetElement;
+            // Esconde imediatamente o conteúdo antigo
+            parent.style.opacity = '0';
+            parent.style.transition = 'none';
+            // Cria o novo container com o design fornecido
+            const newSection = iframeDoc.createElement("div");
+            newSection.style.cssText = "max-width: 42rem; margin: 0 auto; padding: 1rem;";
+            newSection.id = "ingressos-section";
 
-                // Injeta o Tailwind CDN se não existir
-                if (!iframeDoc.querySelector('script[src*="tailwindcss"]')) {
-                  const tailwindScript = iframeDoc.createElement('script');
-                  tailwindScript.src = "https://cdn.tailwindcss.com";
-                  iframeDoc.head.appendChild(tailwindScript);
-                }
+            // Injeta estilos necessários sem CDN
+            const styles = iframeDoc.createElement('style');
+            styles.textContent = `
+              .ticket-card { background: #e5e7eb; border-radius: 0.375rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+              .ticket-button { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; cursor: pointer; border: none; background: transparent; }
+              .ticket-left { display: flex; align-items: center; gap: 0.5rem; }
+              .color-box { width: 1rem; height: 1rem; border-radius: 0.25rem; }
+              .ticket-text { text-align: left; }
+              .ticket-title { font-weight: 600; font-size: 1rem; margin: 0; }
+              .ticket-price { font-size: 0.875rem; color: #4b5563; margin: 0; }
+              .ticket-icon { font-size: 1.25rem; font-weight: bold; }
+              .ticket-section { display: none; padding: 0 0.75rem 1rem; }
+              .ticket-section.show { display: block; }
+              .ticket-details { text-align: left; margin-bottom: 0.75rem; }
+              .ticket-details p { font-size: 0.875rem; margin: 0.25rem 0; }
+              .qty-controls { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
+              .qty-label { font-size: 0.875rem; font-weight: 500; }
+              .qty-buttons { display: flex; align-items: center; gap: 0.5rem; }
+              .qty-btn { padding: 0.25rem 0.5rem; background: #d1d5db; border: none; border-radius: 0.25rem; cursor: pointer; }
+              .qty-display { width: 1.5rem; text-align: center; }
+              .ticket-footer { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #2d7a2d; color: white; padding: 1rem; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 999; }
+              .ticket-footer.show { display: block; }
+              .footer-content { max-width: 42rem; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+              .footer-total-section p { margin: 0; }
+              .footer-total-label { font-size: 0.875rem; opacity: 0.9; }
+              .footer-total-price { font-size: 1.5rem; font-weight: bold; }
+              .footer-total-qty { font-size: 0.75rem; opacity: 0.9; }
+              .finalizar-btn { background: white; color: #2d7a2d; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; font-weight: 600; cursor: pointer; }
+              .finalizar-btn:hover { background: #f3f4f6; }
+            `;
+            iframeDoc.head.appendChild(styles);
 
                 // Define os dados dos ingressos
                 const ingressosData = [
@@ -169,23 +200,24 @@ const ManifestoPage = () => {
 
                   if (footer && footerTotal && footerQty) {
                     if (totalQty > 0) {
-                      footer.classList.remove('hidden');
+                      footer.classList.add('show');
                       footerTotal.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
                       footerQty.textContent = `${totalQty} ${totalQty === 1 ? 'ingresso' : 'ingressos'}`;
                     } else {
-                      footer.classList.add('hidden');
+                      footer.classList.remove('show');
                     }
                   }
                 };
 
-                const toggleSection = (id: string) => {
-                  const section = iframeDoc.getElementById(`section-${id}`);
-                  const icon = iframeDoc.getElementById(`icon-${id}`);
-                  if (section && icon) {
-                    section.classList.toggle('hidden');
-                    icon.textContent = section.classList.contains('hidden') ? '+' : '-';
-                  }
-                };
+        const toggleSection = (id: string) => {
+          const section = iframeDoc.getElementById(`section-${id}`);
+          const icon = iframeDoc.getElementById(`icon-${id}`);
+          if (section && icon) {
+            const isHidden = !section.classList.contains('show');
+            section.classList.toggle('show');
+            icon.textContent = isHidden ? '-' : '+';
+          }
+        };
 
                 const changeQty = (id: string, delta: number) => {
                   const qtySpan = iframeDoc.getElementById(`qty-${id}`);
@@ -204,139 +236,142 @@ const ManifestoPage = () => {
                   }
                 };
 
-                // Cria os blocos de ingressos
-                ingressosData.forEach(({ id, nome, valor, cor }) => {
-                  const bloco = iframeDoc.createElement('div');
-                  bloco.className = 'bg-gray-200 shadow rounded';
-                  
-                  const button = iframeDoc.createElement('button');
-                  button.className = 'w-full flex items-center justify-between p-3';
-                  button.setAttribute('data-toggle-id', id);
-                  
-                  const leftDiv = iframeDoc.createElement('div');
-                  leftDiv.className = 'flex items-center space-x-2';
-                  
-                  const colorBox = iframeDoc.createElement('div');
-                  colorBox.className = 'w-4 h-4 rounded';
-                  colorBox.style.backgroundColor = cor;
-                  
-                  const textDiv = iframeDoc.createElement('div');
-                  textDiv.className = 'text-left';
-                  const title = iframeDoc.createElement('h2');
-                  title.className = 'font-semibold text-base';
-                  title.textContent = nome;
-                  
-                  const price = iframeDoc.createElement('p');
-                  price.className = 'text-sm text-gray-600';
-                  price.textContent = `a partir de R$ ${valor},00`;
-                  
-                  textDiv.appendChild(title);
-                  textDiv.appendChild(price);
-                  leftDiv.appendChild(colorBox);
-                  leftDiv.appendChild(textDiv);
-                  
-                  const icon = iframeDoc.createElement('span');
-                  icon.id = `icon-${id}`;
-                  icon.className = 'text-xl font-bold';
-                  icon.textContent = '+';
-                  
-                  button.appendChild(leftDiv);
-                  button.appendChild(icon);
-                  
-                  // Seção expansível
-                  const section = iframeDoc.createElement('div');
-                  section.id = `section-${id}`;
-                  section.className = 'hidden px-3 pb-4 space-y-3';
-                  
-                  const detailsDiv = iframeDoc.createElement('div');
-                  detailsDiv.className = 'text-left space-y-1';
-                  detailsDiv.innerHTML = `
-                    <p class="text-sm"><strong>Ingresso:</strong> ${nome}</p>
-                    <p class="text-sm"><strong>Lote:</strong> LOTE EXTRA</p>
-                    <p class="text-sm"><strong>Valor:</strong> R$ ${valor},00 + taxa R$ 0</p>
-                  `;
-                  
-                  const qtyDiv = iframeDoc.createElement('div');
-                  qtyDiv.className = 'flex items-center space-x-3 mt-2';
-                  qtyDiv.innerHTML = `
-                    <label for="qty-${id}" class="text-sm font-medium">Quantidade:</label>
-                    <div class="flex items-center space-x-2">
-                      <button class="px-2 py-1 bg-gray-300 rounded minus-btn" data-id="${id}">-</button>
-                      <span id="qty-${id}" class="w-6 text-center">0</span>
-                      <button class="px-2 py-1 bg-gray-300 rounded plus-btn" data-id="${id}">+</button>
-                    </div>
-                  `;
-                  
-                  section.appendChild(detailsDiv);
-                  section.appendChild(qtyDiv);
-                  
-                  bloco.appendChild(button);
-                  bloco.appendChild(section);
-                  newSection.appendChild(bloco);
-                });
+            // Cria os blocos de ingressos
+            ingressosData.forEach(({ id, nome, valor, cor }) => {
+              const bloco = iframeDoc.createElement('div');
+              bloco.className = 'ticket-card';
+              
+              const button = iframeDoc.createElement('button');
+              button.className = 'ticket-button';
+              button.setAttribute('data-toggle-id', id);
+              
+              const leftDiv = iframeDoc.createElement('div');
+              leftDiv.className = 'ticket-left';
+              
+              const colorBox = iframeDoc.createElement('div');
+              colorBox.className = 'color-box';
+              colorBox.style.backgroundColor = cor;
+              
+              const textDiv = iframeDoc.createElement('div');
+              textDiv.className = 'ticket-text';
+              const title = iframeDoc.createElement('h2');
+              title.className = 'ticket-title';
+              title.textContent = nome;
+              
+              const price = iframeDoc.createElement('p');
+              price.className = 'ticket-price';
+              price.textContent = `a partir de R$ ${valor},00`;
+              
+              textDiv.appendChild(title);
+              textDiv.appendChild(price);
+              leftDiv.appendChild(colorBox);
+              leftDiv.appendChild(textDiv);
+              
+              const icon = iframeDoc.createElement('span');
+              icon.id = `icon-${id}`;
+              icon.className = 'ticket-icon';
+              icon.textContent = '+';
+              
+              button.appendChild(leftDiv);
+              button.appendChild(icon);
+              
+              // Seção expansível
+              const section = iframeDoc.createElement('div');
+              section.id = `section-${id}`;
+              section.className = 'ticket-section';
+              
+              const detailsDiv = iframeDoc.createElement('div');
+              detailsDiv.className = 'ticket-details';
+              detailsDiv.innerHTML = `
+                <p><strong>Ingresso:</strong> ${nome}</p>
+                <p><strong>Lote:</strong> LOTE EXTRA</p>
+                <p><strong>Valor:</strong> R$ ${valor},00 + taxa R$ 0</p>
+              `;
+              
+              const qtyDiv = iframeDoc.createElement('div');
+              qtyDiv.className = 'qty-controls';
+              qtyDiv.innerHTML = `
+                <label for="qty-${id}" class="qty-label">Quantidade:</label>
+                <div class="qty-buttons">
+                  <button class="qty-btn minus-btn" data-id="${id}">-</button>
+                  <span id="qty-${id}" class="qty-display">0</span>
+                  <button class="qty-btn plus-btn" data-id="${id}">+</button>
+                </div>
+              `;
+              
+              section.appendChild(detailsDiv);
+              section.appendChild(qtyDiv);
+              
+              bloco.appendChild(button);
+              bloco.appendChild(section);
+              newSection.appendChild(bloco);
+            });
 
-                // Cria rodapé fixo
-                const footer = iframeDoc.createElement('div');
-                footer.id = 'ticket-footer';
-                footer.className = 'hidden fixed bottom-0 left-0 right-0 bg-[#2d7a2d] text-white p-4 shadow-lg z-50';
-                footer.innerHTML = `
-                  <div class="max-w-2xl mx-auto flex items-center justify-between">
-                    <div>
-                      <p class="text-sm opacity-90">Total</p>
-                      <p id="footer-total" class="text-2xl font-bold">R$ 0,00</p>
-                      <p id="footer-qty" class="text-xs opacity-90">0 ingressos</p>
-                    </div>
-                    <button id="finalizar-btn" class="bg-white text-[#2d7a2d] px-6 py-3 rounded font-semibold hover:bg-gray-100 transition-colors">
-                      FINALIZAR COMPRA →
-                    </button>
-                  </div>
-                `;
-                iframeDoc.body.appendChild(footer);
+            // Cria rodapé fixo
+            const footer = iframeDoc.createElement('div');
+            footer.id = 'ticket-footer';
+            footer.className = 'ticket-footer';
+            footer.innerHTML = `
+              <div class="footer-content">
+                <div class="footer-total-section">
+                  <p class="footer-total-label">Total</p>
+                  <p id="footer-total" class="footer-total-price">R$ 0,00</p>
+                  <p id="footer-qty" class="footer-total-qty">0 ingressos</p>
+                </div>
+                <button id="finalizar-btn" class="finalizar-btn">
+                  FINALIZAR COMPRA →
+                </button>
+              </div>
+            `;
+            iframeDoc.body.appendChild(footer);
 
-                // Substitui o conteúdo
-                parent.innerHTML = "";
-                parent.appendChild(newSection);
-                
-                // Mostra o novo conteúdo imediatamente
-                parent.style.opacity = '1';
-                parent.style.transition = 'opacity 0.2s ease-in';
+            // Substitui o conteúdo
+            parent.innerHTML = "";
+            parent.appendChild(newSection);
+            
+            // Mostra o novo conteúdo imediatamente
+            parent.style.opacity = '1';
+            parent.style.transition = 'opacity 0.2s ease-in';
 
-                // Event listeners para os botões de toggle (DEPOIS de adicionar ao DOM)
-                newSection.querySelectorAll('button[data-toggle-id]').forEach((btn) => {
-                  const toggleId = (btn as HTMLElement).getAttribute('data-toggle-id');
-                  if (toggleId) {
-                    btn.addEventListener('click', () => toggleSection(toggleId));
+            // Event listeners para os botões de toggle
+            newSection.querySelectorAll('button[data-toggle-id]').forEach((btn) => {
+              const toggleId = (btn as HTMLElement).getAttribute('data-toggle-id');
+              if (toggleId) {
+                btn.addEventListener('click', () => {
+                  const section = iframeDoc.getElementById(`section-${toggleId}`);
+                  const icon = iframeDoc.getElementById(`icon-${toggleId}`);
+                  if (section && icon) {
+                    const isHidden = !section.classList.contains('show');
+                    section.classList.toggle('show');
+                    icon.textContent = isHidden ? '-' : '+';
                   }
                 });
-
-                // Event listeners para os botões de quantidade
-                newSection.querySelectorAll('.minus-btn').forEach((btn) => {
-                  btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = (btn as HTMLElement).dataset.id;
-                    if (id) changeQty(id, -1);
-                  });
-                });
-                
-                newSection.querySelectorAll('.plus-btn').forEach((btn) => {
-                  btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = (btn as HTMLElement).dataset.id;
-                    if (id) changeQty(id, 1);
-                  });
-                });
-
-                // Event listener para o botão finalizar
-                const finalizarBtn = iframeDoc.getElementById('finalizar-btn');
-                if (finalizarBtn) {
-                  finalizarBtn.addEventListener('click', () => {
-                    console.log('Finalizar compra clicado');
-                    // Aqui você pode adicionar a lógica de finalização
-                  });
-                }
-                
-                break;
               }
+            });
+
+            // Event listeners para os botões de quantidade
+            newSection.querySelectorAll('.minus-btn').forEach((btn) => {
+              btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = (btn as HTMLElement).dataset.id;
+                if (id) changeQty(id, -1);
+              });
+            });
+            
+            newSection.querySelectorAll('.plus-btn').forEach((btn) => {
+              btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = (btn as HTMLElement).dataset.id;
+                if (id) changeQty(id, 1);
+              });
+            });
+
+            // Event listener para o botão finalizar
+            const finalizarBtn = iframeDoc.getElementById('finalizar-btn');
+            if (finalizarBtn) {
+              finalizarBtn.addEventListener('click', () => {
+                console.log('Finalizar compra clicado');
+              });
             }
           }
         };
@@ -346,31 +381,29 @@ const ManifestoPage = () => {
         attachMenuHandlers();
         replaceTicketSection();
 
-        // Observer otimizado com debounce
+        // Observer simplificado - desconecta mais rápido
         let observerTimeout: NodeJS.Timeout;
         const debouncedHandler = () => {
           clearTimeout(observerTimeout);
           observerTimeout = setTimeout(() => {
-            removeUnwantedElements();
             attachMenuHandlers();
-          }, 300);
+          }, 500);
         };
 
         const observer = new MutationObserver(debouncedHandler);
         
-        // Observa apenas mudanças relevantes
         observer.observe(iframeDoc.body, {
           childList: true,
-          subtree: true,
-          attributes: false, // Não observa mudanças de atributos
-          characterData: false // Não observa mudanças de texto
+          subtree: false, // Não observa subárvore profundamente
+          attributes: false,
+          characterData: false
         });
 
-        // Para o observer após 5 segundos (quando o conteúdo já estiver estável)
+        // Para o observer após 1 segundo
         setTimeout(() => {
           observer.disconnect();
-          console.log('Observer desconectado - carregamento completo');
-        }, 5000);
+          console.log('Carregamento otimizado completo');
+        }, 1000);
 
         // Site carregado
         setIsLoading(false);
