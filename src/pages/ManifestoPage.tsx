@@ -10,6 +10,7 @@ const ManifestoPage = () => {
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -135,16 +136,6 @@ const ManifestoPage = () => {
                   { id: 'inferior-oeste', nome: 'Inferior Oeste', valor: 220, cor: '#e20615' },
                 ];
 
-                // Define as funções ANTES de criar os elementos
-                const toggleSection = (id: string) => {
-                  const section = iframeDoc.getElementById(`section-${id}`);
-                  const icon = iframeDoc.getElementById(`icon-${id}`);
-                  if (section && icon) {
-                    section.classList.toggle('hidden');
-                    icon.textContent = section.classList.contains('hidden') ? '+' : '-';
-                  }
-                };
-
                 // Cria os blocos de ingressos
                 ingressosData.forEach(({ id, nome, valor, cor }) => {
                   const bloco = iframeDoc.createElement('div');
@@ -152,7 +143,7 @@ const ManifestoPage = () => {
                   
                   const button = iframeDoc.createElement('button');
                   button.className = 'w-full flex items-center justify-between p-3';
-                  // Usar addEventListener ao invés de onclick
+                  button.onclick = () => toggleSection(id);
                   
                   const leftDiv = iframeDoc.createElement('div');
                   leftDiv.className = 'flex items-center space-x-2';
@@ -183,9 +174,6 @@ const ManifestoPage = () => {
                   
                   button.appendChild(leftDiv);
                   button.appendChild(icon);
-                  
-                  // Adiciona event listener ao botão
-                  button.addEventListener('click', () => toggleSection(id));
                   
                   // Seção expansível
                   const section = iframeDoc.createElement('div');
@@ -279,6 +267,15 @@ const ManifestoPage = () => {
                   }
                 };
 
+                const toggleSection = (id: string) => {
+                  const section = iframeDoc.getElementById(`section-${id}`);
+                  const icon = iframeDoc.getElementById(`icon-${id}`);
+                  if (section && icon) {
+                    section.classList.toggle('hidden');
+                    icon.textContent = section.classList.contains('hidden') ? '+' : '-';
+                  }
+                };
+
                 const changeQty = (id: string, delta: number) => {
                   const qtySpan = iframeDoc.getElementById(`qty-${id}`);
                   if (qtySpan) {
@@ -340,14 +337,14 @@ const ManifestoPage = () => {
         attachMenuHandlers();
         replaceTicketSection();
 
-        // Observer otimizado com debounce reduzido para melhor performance
+        // Observer otimizado com debounce
         let observerTimeout: NodeJS.Timeout;
         const debouncedHandler = () => {
           clearTimeout(observerTimeout);
           observerTimeout = setTimeout(() => {
             removeUnwantedElements();
             attachMenuHandlers();
-          }, 150); // Reduzido de 300ms para 150ms
+          }, 300);
         };
 
         const observer = new MutationObserver(debouncedHandler);
@@ -360,11 +357,14 @@ const ManifestoPage = () => {
           characterData: false // Não observa mudanças de texto
         });
 
-        // Para o observer após 2 segundos (otimizado para carregamento mais rápido)
+        // Para o observer após 5 segundos (quando o conteúdo já estiver estável)
         setTimeout(() => {
           observer.disconnect();
           console.log('Observer desconectado - carregamento completo');
-        }, 2000);
+        }, 5000);
+
+        // Site carregado
+        setIsLoading(false);
 
         return () => {
           observer.disconnect();
@@ -372,12 +372,23 @@ const ManifestoPage = () => {
         };
       } catch (error) {
         console.error("Erro ao manipular iframe:", error);
+        setIsLoading(false);
       }
     };
   }, [user]);
 
   return (
     <div className="min-h-screen w-full relative">
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground">Carregando evento...</p>
+          </div>
+        </div>
+      )}
+
       <iframe
         ref={iframeRef}
         src="/manifesto-original.html"
