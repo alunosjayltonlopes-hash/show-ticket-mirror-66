@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-
 import TicketList from "@/components/TicketList";
 import SupportModal from "@/components/SupportModal";
 import UserMenuModal from "@/components/UserMenuModal";
 import { useAuth } from "@/hooks/useAuth";
-import manifestoHtml from "@/Manifesto/index.html?raw";
 const ManifestoPage = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
@@ -414,7 +412,7 @@ const ManifestoPage = () => {
 
       <iframe
         ref={iframeRef}
-        srcDoc={manifestoHtml}
+        src="/manifesto-original.html"
         className="w-full h-screen border-0"
         title="Manifesto Musical"
         sandbox="allow-scripts allow-same-origin allow-forms"
