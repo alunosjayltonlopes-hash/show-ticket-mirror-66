@@ -9,7 +9,6 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ManifestoPage from "./pages/ManifestoPage";
-import EventTicketsPage from "./pages/EventTicketsPage";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<ManifestoPage />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<EventTicketsPage />} />
+            <Route path="/br/ingressos-shows/rock-e-pop/henrique-juliano-ingressos/e-159198659" element={<ManifestoPage />} />
             <Route path="/original" element={<Index />} />
             {/* Legacy route for compatibility */}
             <Route path="/dashboard" element={<Dashboard />} />
