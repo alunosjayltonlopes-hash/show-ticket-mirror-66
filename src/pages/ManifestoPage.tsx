@@ -11,22 +11,12 @@ const ManifestoPage = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe) return;
 
     let cleanupExecuted = false;
-
-    // Tratamento de erro do iframe
-    const handleIframeError = () => {
-      console.error('Erro ao carregar iframe');
-      setHasError(true);
-      setIsLoading(false);
-    };
-
-    iframe.addEventListener('error', handleIframeError);
 
     iframe.onload = () => {
       try {
@@ -421,28 +411,13 @@ const ManifestoPage = () => {
         return () => {
           observer.disconnect();
           clearTimeout(observerTimeout);
-          iframe.removeEventListener('error', handleIframeError);
         };
       } catch (error) {
         console.error("Erro ao manipular iframe:", error);
-        setHasError(true);
         setIsLoading(false);
       }
     };
-
-    // Timeout de segurança: se não carregar em 10 segundos, mostra erro
-    const loadTimeout = setTimeout(() => {
-      if (isLoading) {
-        console.error('Timeout ao carregar página');
-        setHasError(true);
-        setIsLoading(false);
-      }
-    }, 10000);
-
-    return () => {
-      clearTimeout(loadTimeout);
-    };
-  }, [user, isLoading]);
+  }, [user]);
 
   return (
     <div className="min-h-screen w-full relative">
@@ -456,25 +431,6 @@ const ManifestoPage = () => {
         </div>
       )}
 
-      {/* Mensagem de erro */}
-      {hasError && (
-        <div className="absolute inset-0 bg-background z-50 flex items-center justify-center p-4">
-          <div className="max-w-md text-center space-y-4">
-            <div className="text-6xl">⚠️</div>
-            <h2 className="text-2xl font-bold text-foreground">Ops! Algo deu errado</h2>
-            <p className="text-muted-foreground">
-              Não foi possível carregar a página do evento. Por favor, tente novamente.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors"
-            >
-              Recarregar Página
-            </button>
-          </div>
-        </div>
-      )}
-
       <iframe
         ref={iframeRef}
         src="/manifesto-original.html"
@@ -482,7 +438,6 @@ const ManifestoPage = () => {
         title="Manifesto Musical"
         sandbox="allow-scripts allow-same-origin allow-forms"
         loading="eager"
-        style={{ display: hasError ? 'none' : 'block' }}
       />
 
       {/* Modais controlados fora do iframe */}
