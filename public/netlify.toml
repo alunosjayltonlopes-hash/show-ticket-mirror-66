@@ -1,6 +1,6 @@
 [[redirects]]
-  from = "/manifesto-original.html"
-  to = "/manifesto-original.html"
+  from = "/manifesto/*"
+  to = "/manifesto/:splat"
   status = 200
 
 [[redirects]]
