@@ -54,14 +54,6 @@ const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
       <DialogContent className="max-w-sm p-0 gap-0 bg-background">
         <DialogHeader className="p-4 pb-3 border-b">
           <DialogTitle className="text-center">Meus Dados</DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-2 top-2 h-8 w-8"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
         
         <div className="flex flex-col">

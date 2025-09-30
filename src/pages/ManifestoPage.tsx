@@ -120,7 +120,7 @@ const ManifestoPage = () => {
 
         // Liga eventos para menu dentro do iframe (Entre/Cadastre-se, Ajuda, Home)
         const attachMenuHandlers = () => {
-          const all = Array.from(iframeDoc.querySelectorAll('a, button, li, div, span')) as HTMLElement[];
+          const all = Array.from(iframeDoc.querySelectorAll('a')) as HTMLElement[];
           all.forEach((el) => {
             const text = (el.textContent || '').trim().toLowerCase();
             if (!text || el.getAttribute('data-wired') === '1') return;
