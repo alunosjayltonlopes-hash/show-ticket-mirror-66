@@ -14,6 +14,7 @@ const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
   const navigate = useNavigate();
 
   const handleMyOrders = () => {
+    console.log('Clicou em Meus Pedidos, usuário:', user);
     if (user) {
       navigate('/dashboard');
       onClose();
@@ -24,8 +25,8 @@ const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
   };
 
   const handleMyData = () => {
+    console.log('Clicou em Meus Dados, usuário:', user);
     if (user) {
-      // Poderia abrir um modal de configurações ou navegar para perfil
       navigate('/dashboard');
       onClose();
     } else {
@@ -35,6 +36,7 @@ const UserMenuModal = ({ isOpen, onClose }: UserMenuModalProps) => {
   };
 
   const handleLoginSignup = () => {
+    console.log('Clicou em Login/Cadastro');
     navigate('/auth');
     onClose();
   };
