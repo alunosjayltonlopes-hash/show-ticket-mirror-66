@@ -1,9 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import TicketList from "@/components/TicketList";
-
+import SupportModal from "@/components/SupportModal";
+import UserMenuModal from "@/components/UserMenuModal";
 const ManifestoPage = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -115,17 +118,48 @@ const ManifestoPage = () => {
           });
         };
 
+        // Liga eventos para menu dentro do iframe (Entre/Cadastre-se, Ajuda, Home)
+        const attachMenuHandlers = () => {
+          const all = Array.from(iframeDoc.querySelectorAll('a, button, li, div, span')) as HTMLElement[];
+          all.forEach((el) => {
+            const text = (el.textContent || '').trim().toLowerCase();
+            if (!text || el.getAttribute('data-wired') === '1') return;
+
+            const makeButton = (handler: (e: Event) => void) => {
+              el.setAttribute('data-wired', '1');
+              el.removeAttribute('href');
+              el.style.pointerEvents = 'auto';
+              el.style.cursor = 'pointer';
+              el.setAttribute('role', 'button');
+              el.setAttribute('tabindex', '0');
+              el.addEventListener('click', (e) => { e.preventDefault(); handler(e); });
+              el.addEventListener('keydown', (e: any) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(e); } });
+            };
+
+            if (text.includes('entre') || text.includes('cadastre')) {
+              makeButton(() => setIsUserMenuOpen(true));
+            } else if (text.includes('ajuda')) {
+              makeButton(() => setIsSupportOpen(true));
+            } else if (text === 'home' || text.includes('home')) {
+              // manter na mesma página
+              makeButton(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+            }
+          });
+        };
+
         // Executa imediatamente
         removeUnwantedElements();
+        attachMenuHandlers();
 
         // Executa novamente após um delay para pegar elementos carregados dinamicamente
-        setTimeout(removeUnwantedElements, 500);
-        setTimeout(removeUnwantedElements, 1000);
-        setTimeout(removeUnwantedElements, 2000);
+        setTimeout(() => { removeUnwantedElements(); attachMenuHandlers(); }, 500);
+        setTimeout(() => { removeUnwantedElements(); attachMenuHandlers(); }, 1000);
+        setTimeout(() => { removeUnwantedElements(); attachMenuHandlers(); }, 2000);
 
         // Observa mudanças no DOM para remover widgets que aparecem depois
         const observer = new MutationObserver(() => {
           removeUnwantedElements();
+          attachMenuHandlers();
         });
 
         observer.observe(iframeDoc.body, {
@@ -175,6 +209,10 @@ const ManifestoPage = () => {
         title="Manifesto Musical"
         sandbox="allow-scripts allow-same-origin allow-forms"
       />
+
+      {/* Modais controlados fora do iframe */}
+      <SupportModal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
+      <UserMenuModal isOpen={isUserMenuOpen} onClose={() => setIsUserMenuOpen(false)} />
     </div>
   );
 };
