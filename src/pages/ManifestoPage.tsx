@@ -136,6 +136,74 @@ const ManifestoPage = () => {
                   { id: 'inferior-oeste', nome: 'Inferior Oeste', valor: 220, cor: '#e20615' },
                 ];
 
+                // Funções de controle (declaradas ANTES de criar os elementos)
+                const getTotalQty = () => {
+                  let total = 0;
+                  ingressosData.forEach(({ id }) => {
+                    const qtySpan = iframeDoc.getElementById(`qty-${id}`);
+                    if (qtySpan) {
+                      total += parseInt(qtySpan.textContent || '0');
+                    }
+                  });
+                  return total;
+                };
+
+                const getTotalPrice = () => {
+                  let total = 0;
+                  ingressosData.forEach(({ id, valor }) => {
+                    const qtySpan = iframeDoc.getElementById(`qty-${id}`);
+                    if (qtySpan) {
+                      const qty = parseInt(qtySpan.textContent || '0');
+                      total += qty * valor;
+                    }
+                  });
+                  return total;
+                };
+
+                const updateFooter = () => {
+                  const totalQty = getTotalQty();
+                  const totalPrice = getTotalPrice();
+                  const footer = iframeDoc.getElementById('ticket-footer');
+                  const footerTotal = iframeDoc.getElementById('footer-total');
+                  const footerQty = iframeDoc.getElementById('footer-qty');
+
+                  if (footer && footerTotal && footerQty) {
+                    if (totalQty > 0) {
+                      footer.classList.remove('hidden');
+                      footerTotal.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+                      footerQty.textContent = `${totalQty} ${totalQty === 1 ? 'ingresso' : 'ingressos'}`;
+                    } else {
+                      footer.classList.add('hidden');
+                    }
+                  }
+                };
+
+                const toggleSection = (id: string) => {
+                  const section = iframeDoc.getElementById(`section-${id}`);
+                  const icon = iframeDoc.getElementById(`icon-${id}`);
+                  if (section && icon) {
+                    section.classList.toggle('hidden');
+                    icon.textContent = section.classList.contains('hidden') ? '+' : '-';
+                  }
+                };
+
+                const changeQty = (id: string, delta: number) => {
+                  const qtySpan = iframeDoc.getElementById(`qty-${id}`);
+                  if (qtySpan) {
+                    let qty = parseInt(qtySpan.textContent || '0');
+                    const totalQty = getTotalQty();
+                    
+                    // Se está tentando aumentar, verifica o limite global de 2
+                    if (delta > 0 && totalQty >= 2) {
+                      return; // Não permite adicionar mais
+                    }
+                    
+                    qty = Math.max(0, Math.min(2, qty + delta));
+                    qtySpan.textContent = qty.toString();
+                    updateFooter();
+                  }
+                };
+
                 // Cria os blocos de ingressos
                 ingressosData.forEach(({ id, nome, valor, cor }) => {
                   const bloco = iframeDoc.createElement('div');
@@ -143,7 +211,7 @@ const ManifestoPage = () => {
                   
                   const button = iframeDoc.createElement('button');
                   button.className = 'w-full flex items-center justify-between p-3';
-                  button.onclick = () => toggleSection(id);
+                  button.setAttribute('data-toggle-id', id);
                   
                   const leftDiv = iframeDoc.createElement('div');
                   leftDiv.className = 'flex items-center space-x-2';
@@ -225,76 +293,24 @@ const ManifestoPage = () => {
                 `;
                 iframeDoc.body.appendChild(footer);
 
-                // Funções de controle
-                const getTotalQty = () => {
-                  let total = 0;
-                  ingressosData.forEach(({ id }) => {
-                    const qtySpan = iframeDoc.getElementById(`qty-${id}`);
-                    if (qtySpan) {
-                      total += parseInt(qtySpan.textContent || '0');
-                    }
-                  });
-                  return total;
-                };
+                // Substitui o conteúdo
+                parent.innerHTML = "";
+                parent.appendChild(newSection);
+                
+                // Mostra o novo conteúdo imediatamente
+                parent.style.opacity = '1';
+                parent.style.transition = 'opacity 0.2s ease-in';
 
-                const getTotalPrice = () => {
-                  let total = 0;
-                  ingressosData.forEach(({ id, valor }) => {
-                    const qtySpan = iframeDoc.getElementById(`qty-${id}`);
-                    if (qtySpan) {
-                      const qty = parseInt(qtySpan.textContent || '0');
-                      total += qty * valor;
-                    }
-                  });
-                  return total;
-                };
-
-                const updateFooter = () => {
-                  const totalQty = getTotalQty();
-                  const totalPrice = getTotalPrice();
-                  const footer = iframeDoc.getElementById('ticket-footer');
-                  const footerTotal = iframeDoc.getElementById('footer-total');
-                  const footerQty = iframeDoc.getElementById('footer-qty');
-
-                  if (footer && footerTotal && footerQty) {
-                    if (totalQty > 0) {
-                      footer.classList.remove('hidden');
-                      footerTotal.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
-                      footerQty.textContent = `${totalQty} ${totalQty === 1 ? 'ingresso' : 'ingressos'}`;
-                    } else {
-                      footer.classList.add('hidden');
-                    }
+                // Event listeners para os botões de toggle (DEPOIS de adicionar ao DOM)
+                newSection.querySelectorAll('button[data-toggle-id]').forEach((btn) => {
+                  const toggleId = (btn as HTMLElement).getAttribute('data-toggle-id');
+                  if (toggleId) {
+                    btn.addEventListener('click', () => toggleSection(toggleId));
                   }
-                };
+                });
 
-                const toggleSection = (id: string) => {
-                  const section = iframeDoc.getElementById(`section-${id}`);
-                  const icon = iframeDoc.getElementById(`icon-${id}`);
-                  if (section && icon) {
-                    section.classList.toggle('hidden');
-                    icon.textContent = section.classList.contains('hidden') ? '+' : '-';
-                  }
-                };
-
-                const changeQty = (id: string, delta: number) => {
-                  const qtySpan = iframeDoc.getElementById(`qty-${id}`);
-                  if (qtySpan) {
-                    let qty = parseInt(qtySpan.textContent || '0');
-                    const totalQty = getTotalQty();
-                    
-                    // Se está tentando aumentar, verifica o limite global de 2
-                    if (delta > 0 && totalQty >= 2) {
-                      return; // Não permite adicionar mais
-                    }
-                    
-                    qty = Math.max(0, Math.min(2, qty + delta));
-                    qtySpan.textContent = qty.toString();
-                    updateFooter();
-                  }
-                };
-
-                // Event listeners para os botões (execução imediata para performance)
-                iframeDoc.querySelectorAll('.minus-btn').forEach((btn) => {
+                // Event listeners para os botões de quantidade
+                newSection.querySelectorAll('.minus-btn').forEach((btn) => {
                   btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const id = (btn as HTMLElement).dataset.id;
@@ -302,7 +318,7 @@ const ManifestoPage = () => {
                   });
                 });
                 
-                iframeDoc.querySelectorAll('.plus-btn').forEach((btn) => {
+                newSection.querySelectorAll('.plus-btn').forEach((btn) => {
                   btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const id = (btn as HTMLElement).dataset.id;
@@ -318,14 +334,7 @@ const ManifestoPage = () => {
                     // Aqui você pode adicionar a lógica de finalização
                   });
                 }
-
-                // Substitui o conteúdo
-                parent.innerHTML = "";
-                parent.appendChild(newSection);
                 
-                // Mostra o novo conteúdo imediatamente
-                parent.style.opacity = '1';
-                parent.style.transition = 'opacity 0.2s ease-in';
                 break;
               }
             }
