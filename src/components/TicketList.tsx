@@ -7,6 +7,7 @@ interface TicketCategory {
   id: string;
   name: string;
   price: number;
+  color: string;
   checkoutUrls: {
     quantity1: string;
     quantity2: string;
@@ -16,8 +17,9 @@ interface TicketCategory {
 const ticketCategories: TicketCategory[] = [
   {
     id: "gramado",
-    name: "GRAMADO",
+    name: "Gramado",
     price: 290,
+    color: "#53ad53",
     checkoutUrls: {
       quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713623463492&store=7136",
       quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713621611623&store=7136"
@@ -25,8 +27,9 @@ const ticketCategories: TicketCategory[] = [
   },
   {
     id: "inferior-sul",
-    name: "INFERIOR SUL",
+    name: "Inferior Sul",
     price: 220,
+    color: "#ff78c9",
     checkoutUrls: {
       quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713615632376&store=7136",
       quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713684979622&store=7136"
@@ -34,8 +37,9 @@ const ticketCategories: TicketCategory[] = [
   },
   {
     id: "superior-sul",
-    name: "SUPERIOR SUL",
+    name: "Superior Sul",
     price: 180,
+    color: "#e20615",
     checkoutUrls: {
       quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713697639947&store=7136",
       quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713631219612&store=7136"
@@ -43,8 +47,9 @@ const ticketCategories: TicketCategory[] = [
   },
   {
     id: "inferior-leste",
-    name: "INFERIOR LESTE",
+    name: "Inferior Leste",
     price: 220,
+    color: "#38a1e0",
     checkoutUrls: {
       quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713623463492&store=7136",
       quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713621611623&store=7136"
@@ -52,8 +57,9 @@ const ticketCategories: TicketCategory[] = [
   },
   {
     id: "superior-leste",
-    name: "SUPERIOR LESTE",
+    name: "Superior Leste",
     price: 180,
+    color: "#832cb2",
     checkoutUrls: {
       quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713615632376&store=7136",
       quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713684979622&store=7136"
@@ -61,8 +67,9 @@ const ticketCategories: TicketCategory[] = [
   },
   {
     id: "inferior-oeste",
-    name: "INFERIOR OESTE",
+    name: "Inferior Oeste",
     price: 220,
+    color: "#e20615",
     checkoutUrls: {
       quantity1: "https://checkout.vendeagora.com/api/public/shopify?product=713697639947&store=7136",
       quantity2: "https://checkout.vendeagora.com/api/public/shopify?product=713631219612&store=7136"
@@ -117,54 +124,65 @@ const TicketList = () => {
 
   return (
     <div className="relative pb-24">
-      <div className="space-y-2">
+      <div className="space-y-3">
         {ticketCategories.map((category) => {
           const isExpanded = expandedCategory === category.id;
           const quantity = quantities[category.id] || 0;
 
           return (
-            <div key={category.id} className="border border-border rounded-lg overflow-hidden bg-card">
+            <div key={category.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
               {/* Header - sempre visível */}
               <button
                 onClick={() => handleCategoryClick(category.id)}
-                className="w-full px-4 py-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
+                className="w-full px-4 py-4 flex items-center gap-3 hover:bg-gray-50 transition-colors"
               >
-                <div className="flex flex-col items-start gap-1">
-                  <h3 className="font-semibold text-base">{category.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    R$ {category.price.toFixed(2)}
+                {/* Quadrado colorido */}
+                <div 
+                  className="w-10 h-10 rounded-lg flex-shrink-0"
+                  style={{ backgroundColor: category.color }}
+                />
+                
+                {/* Informações do ingresso */}
+                <div className="flex-1 flex flex-col items-start gap-1">
+                  <h3 className="font-bold text-base text-gray-800">{category.name}</h3>
+                  <p className="text-sm text-gray-600">
+                    a partir de R$ {category.price.toFixed(2)}
                   </p>
                 </div>
-                <ChevronDown 
-                  className={cn(
-                    "h-5 w-5 text-muted-foreground transition-transform",
-                    isExpanded && "rotate-180"
-                  )}
-                />
+
+                {/* Ícone de expandir */}
+                <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                  <ChevronDown 
+                    className={cn(
+                      "h-4 w-4 text-white transition-transform",
+                      isExpanded && "rotate-180"
+                    )}
+                  />
+                </div>
               </button>
 
               {/* Conteúdo expansível */}
               {isExpanded && (
-                <div className="px-4 pb-4 border-t border-border bg-muted/20">
+                <div className="px-4 pb-4 border-t border-gray-200 bg-gray-50">
                   <div className="pt-4 space-y-4">
                     {/* Seletor de quantidade */}
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Quantidade:</span>
+                      <span className="text-sm font-semibold text-gray-700">Quantidade:</span>
                       <div className="flex items-center gap-3">
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8"
+                          className="h-9 w-9 rounded-lg border-gray-300"
                           onClick={() => handleQuantityChange(category.id, quantity - 1)}
                           disabled={quantity <= 0}
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
-                        <span className="font-bold text-lg w-8 text-center">{quantity}</span>
+                        <span className="font-bold text-xl w-10 text-center text-gray-900">{quantity}</span>
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8"
+                          className="h-9 w-9 rounded-lg border-gray-300"
                           onClick={() => handleQuantityChange(category.id, quantity + 1)}
                           disabled={quantity >= 2}
                         >
@@ -175,9 +193,9 @@ const TicketList = () => {
 
                     {/* Subtotal */}
                     {quantity > 0 && (
-                      <div className="flex items-center justify-between pt-2 border-t border-border">
-                        <span className="text-sm text-muted-foreground">Subtotal:</span>
-                        <span className="font-bold text-lg">
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                        <span className="text-sm font-medium text-gray-600">Subtotal:</span>
+                        <span className="font-bold text-xl text-gray-900">
                           R$ {(category.price * quantity).toFixed(2)}
                         </span>
                       </div>
