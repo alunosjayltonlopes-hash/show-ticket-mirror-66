@@ -25,42 +25,18 @@ const ManifestoPage = () => {
 
         cleanupExecuted = true;
 
-        // Função otimizada para remover elementos indesejados e scripts pesados
+        // Função para remover apenas scripts de tracking específicos
         const removeUnwantedElements = () => {
-          // Remove scripts de tracking IMEDIATAMENTE para evitar execução
+          // Remove apenas scripts de tracking externos
           const trackingScripts = iframeDoc.querySelectorAll(
-            'script[src*="facebook"], script[src*="fbevents"], script[src*="clarity"], ' +
-            'script[src*="criteo"], script[src*="google-analytics"], script[src*="googletagmanager"], ' +
-            'script[src*="gtm"], script[src*="analytics"], noscript'
+            'script[src*="facebook.com"], script[src*="fbevents"], script[src*="clarity.ms"], ' +
+            'script[src*="criteo.net"], script[src*="google-analytics.com"], script[src*="googletagmanager.com"]'
           );
           trackingScripts.forEach(script => script.remove());
 
-          // Remove scripts inline de tracking (GTM, Facebook, etc)
-          const inlineScripts = Array.from(iframeDoc.querySelectorAll('script:not([src])')).filter((script: any) => {
-            const content = script.textContent || '';
-            return content.includes('fbq') || content.includes('gtag') || content.includes('google_tag_manager') || 
-                   content.includes('clarity') || content.includes('criteo');
-          });
-          inlineScripts.forEach(script => script.remove());
-
-          // Injeta CSS para melhorar renderização
-          const optimizationStyles = iframeDoc.createElement('style');
-          optimizationStyles.textContent = `
-            * {
-              -webkit-font-smoothing: antialiased;
-              -moz-osx-font-smoothing: grayscale;
-            }
-          `;
-          
-          if (!iframeDoc.querySelector('#lovable-optimization-styles')) {
-            optimizationStyles.id = 'lovable-optimization-styles';
-            iframeDoc.head.appendChild(optimizationStyles);
-          }
-
-          // Remove widgets de chat
+          // Remove widgets de chat apenas
           const chatElements = iframeDoc.querySelectorAll(
-            '[id*="chat"], [class*="chat"], [id*="widget"], [class*="widget"], ' +
-            '[id*="messenger"], [class*="messenger"], [id*="whatsapp"], [class*="whatsapp"]'
+            'iframe[src*="chat"], iframe[src*="widget"], [id*="crisp"], [id*="intercom"]'
           );
           chatElements.forEach(el => el.remove());
         };
@@ -376,10 +352,18 @@ const ManifestoPage = () => {
           }
         };
 
-        // Executa limpeza inicial imediatamente
+        // Executa limpeza inicial
         removeUnwantedElements();
         attachMenuHandlers();
         replaceTicketSection();
+
+        // Garante que o iframe role para o topo
+        if (iframeDoc.body) {
+          iframeDoc.body.scrollTop = 0;
+          if (iframeDoc.documentElement) {
+            iframeDoc.documentElement.scrollTop = 0;
+          }
+        }
 
         // Observer simplificado - desconecta mais rápido
         let observerTimeout: NodeJS.Timeout;
