@@ -1,0 +1,23 @@
+[[redirects]]
+  from = "/webservices/*"
+  to = "https://www.guicheweb.com.br/webservices/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/manifesto/*"
+  to = "/manifesto/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"

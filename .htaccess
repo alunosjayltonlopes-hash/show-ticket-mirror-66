@@ -1,0 +1,19 @@
+# MIME types
+AddType text/css .css
+AddType application/javascript .js
+AddType text/javascript .js
+AddType application/json .json
+AddType application/wasm .wasm
+AddType font/woff2 .woff2
+AddType font/woff .woff
+AddType image/svg+xml .svg
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteRule ^.*\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
