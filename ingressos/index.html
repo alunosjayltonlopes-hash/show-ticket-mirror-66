@@ -810,141 +810,75 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- FIM DO ELSE DO CONTADOR -->
 </div>                <!-- FIM INGRESSOS -->
 
-                <!-- AVISO CASO NAO TENHA NENHUM INGRESSO DISPONÍVEL -->
+                <!-- AVISO CASO NAO TENHA NENHUM INGRESSO DISPONÍVEL --
+    <!-- SEÇÃO DE SETORES -->
+    <div id="setores-container" class="space-y-4"></div>
 
-                <div class="row mt-4 mb-4 justify-content-center">
-                    <div class="col-12 col-md-10">
-                                                    <div class="text-center infoweb-evento">
-                                <h2 id="loading_setores" class="font-weight-bold">
-                                    CARREGANDO SETORES<br><br>
-                                    <i class="text-muted fas fa-spinner fa-spin fa-2x"></i>
-                                </h2>
-                            </div>
-                                            </div>
-                </div>
-                <!-- AVISO CASO NAO TENHA NENHUM INGRESSO DISPONÍVEL -->
+    <script>
+      const ingressos = [
+        { id: 'gramado', nome: 'Gramado', valor: 290, cor: '#53ad53' },
+        { id: 'inferior-sul', nome: 'Inferior Sul', valor: 220, cor: '#ff78c9' },
+        { id: 'superior-sul', nome: 'Superior Sul', valor: 180, cor: '#e20615' },
+        { id: 'inferior-leste', nome: 'Inferior Leste', valor: 220, cor: '#38a1e0' },
+        { id: 'superior-leste', nome: 'Superior Leste', valor: 180, cor: '#832cb2' },
+        { id: 'inferior-oeste', nome: 'Inferior Oeste', valor: 220, cor: '#e20615' },
+      ];
 
-                <!-- VIDEO DO EVENTO -->
-                                    <div id="video_evento" class="row mt-4 mb-4">
-                        <div class="col-12">
-                            <iframe id="frameVideo" height="350" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen" class="yt-video"></iframe>
-                        </div>
-                    </div>
-                                <!-- FIM VIDEO DO EVENTO -->
-
-                <!-- INFOS DO EVENTO -->
-                                    <div id="infos_evento" class="row mt-4 mb-4 justify-content-center">
-                        <div class="col-12 col-md-10">
-                            <h2><b>INFORMAÇÕES</b></h2>
-                            <hr>
-                            <div class="text-left infoweb-evento">
-                                <div class="text-center infoweb-evento">
-                                    <h2 id="loading_info" class="font-weight-bold">
-                                        <i class="text-muted fas fa-spinner fa-spin fa-2x"></i>
-                                    </h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                                <!-- FIM INFOS DO EVENTO -->
-
-                <!-- REGRAS DE VENDA ONLINE -->
-                
-<div id="ui_regras"></div>
-
-<script type="text/babel">
-  const {
-    CssBaseline,
-    Box,
-    AccordionDetails,
-    Link,
-    Accordion,
-    AccordionSummary,
-    Stack,
-    Typography,
-    Button,
-    Chip,
-    Modal,
-    useTheme,
-    useMediaQuery,
-    CircularProgress,
-    Backdrop
-  } = MaterialUI;
-
-  function App() {
-
-    const stackMainStyle = { width: '100%' };
-    const accordionStyle = { my: 3, boxShadow: 'none', borderWidth: "0.5px", borderColor: '#E6E9EC', borderStyle: "solid", backgroundColor: "#E6E9EC" };
-    const textStyle = { mb: 2, textAlign: 'start' };
-    const buttonStyle = {
-      borderRadius: 1,
-      backgroundColor: '#898989',
-      color: 'white',
-      px: 2,
-      '&:hover': { backgroundColor: '#898989' }
-    };
-
-    return (
-      <Box>
-        <div className="row justify-content-center mb-4">
-          <div className="col-12 col-md-10">
-            <Accordion sx={accordionStyle} defaultExpanded>
-              <AccordionSummary
-                aria-controls="panel1-content"
-                id="panel1-header"
-              >
-                <Stack sx={stackMainStyle} spacing={1} alignItems="center" direction={"row"} justifyContent="space-between">
-                  <Typography variant="h6" component="h3">
-                    Regras para venda on-line
-                  </Typography>
-                </Stack>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography sx={textStyle} component="p">
-                  1. Todas as disposições aplicáveis às vendas de ingressos pela plataforma da Guichê Web se encontram previstas nos Termos de Uso, sobre o qual todo(a) usuário(a) cadastrado(a) manifestou ciência e aceite ao realizar seu cadastro, também se encontrando disponíveis ininterruptamente para consulta em nosso site.
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  2. A Guichê Web é uma plataforma intermediária especializada na venda de ingressos online e não organiza os eventos comercializados. Os organizadores utilizam nossa plataforma para ofertar seus eventos ao público, sendo os únicos responsáveis por todo e qualquer assunto relativo ao evento (produção, organização, política de vendas, precificação, setorização, políticas de meia-entrada, atrações, alterações de datas e/ou local de realização do evento, entre outros).
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  3. Como livremente aceito e previsto nos Termos de Uso, a obrigação da Guichê Web se limita estritamente ao uso e manutenção da plataforma de vendas dos ingressos, garantindo sua usabilidade perante os(as) usuários(as) cadastrados(as).
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  4. Cabe ao organizador do evento (e apenas a ele) garantir que suas atividades estejam em conformidade com a legislação aplicável a seu evento, incluindo, mas não apenas, em relação aos documentos necessários para sua realização (alvará de autorização, licença de funcionamento, divulgação e cumprimento de protocolos de políticas sanitárias, entre outros).
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  5. Nosso site (www.guicheweb.com.br) e nosso App (Guichê Web) são os únicos canais oficiais de vendas da Guichê Web. Não nos responsabilizamos, em qualquer hipótese e aspecto, por ingressos adquiridos com terceiros ou por meio de qualquer endereço/domínio diverso do oficial.
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  6. A Guichê Web não permite e repudia a venda de ingressos para eventos irregulares, que não estejam seguindo todas as orientações e protocolos de segurança determinados pelas autoridades governamentais competentes. Consideramos, antes de tudo, a saúde e segurança de todos.
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  7. Para acessar o evento é obrigatória a apresentação do ingresso impresso e assinado ou em formato digital através do App (Guichê Web), juntamente com documento de identificação oficial com foto.
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  8. O não comparecimento ao evento invalidará o ingresso e não permitirá reembolso, em nenhuma hipótese, ante o integral fornecimento do serviço e consequente realização do evento.
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  9.  O(a) próprio(a) consumidor(a) é o único e exclusivo responsável por solicitar a transferência de ingressos para outro(a) usuário(a) em sua compra. A Guichê Web não realiza tal transação por conta própria. A alteração de titularidade de um ingresso pode ocorrer somente 1 (uma) vez, qualquer alteração adicional dependerá de aprovação da organização do evento.
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  10. Compras suspeitas ou com evidências de fraude de qualquer natureza no processo de compra serão recusadas, canceladas e/ou reembolsadas. Os(as) usuários(as) entendem que estão sujeitos(as), inclusive, a não aprovações de compras por meio de cartão de crédito em virtude do sistema antifraude das plataformas de pagamento (Mercado Pago, PagSeguro, entre outros).
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  11. Solicitações de estorno/cancelamento em razão do exercício do direito de arrependimento deverão ser efetuadas em até 7 (sete) dias contados da data de compra do ingresso, desde que seja realizada com antecedência mínima de 48 (quarenta e oito) horas antes da realização do evento, conforme item 9.5 dos Termos de Uso. O prazo de 48h busca evitar a utilização indevida de tal mecanismo para repasse de ingressos cancelados a terceiros por parte dos(as) usuários(as).
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  12. Caso não conste da descrição do evento acima quaisquer informações adicionais sobre o evento, como estacionamento, cardápio, line-up, ordem de entrada de artistas e demais, relacionadas exclusivamente à organização do evento, poderão ser solicitadas à Guichê Web, que obterá as informações junto ao organizador para inclusão na descrição da página de vendas.
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  13. Como já previsto na aba de contato em nosso site, o horário de atendimento do SAC da Guichê Web é das 08h às 18h, de segunda à sexta-feira, pelos canais e-mail, redes sociais e telefone.
-                </Typography>
-                <Typography sx={textStyle} component="p">
-                  14. Ainda precisa de ajuda? Acesse nosso site e clique em "Contato", localizada na parte inferior de nosso site. Ao acessar este item, você terá acesso a um formulário de contato e todas as formas de nos encaminhar sua mensagem.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+      const container = document.getElementById('setores-container');
+      ingressos.forEach(({ id, nome, valor, cor }) => {
+        const bloco = document.createElement('div');
+        bloco.className = 'bg-white shadow rounded';
+        bloco.innerHTML = `
+          <div class="w-full flex items-center justify-between p-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-4 h-4 rounded" style="background-color: ${cor};"></div>
+              <div>
+                <h2 class="font-semibold text-lg">${nome}</h2>
+                <p class="text-sm text-gray-500">a partir de R$ ${valor},00</p>
+              </div>
+            </div>
           </div>
+          <div class="px-4 pb-4 space-y-2">
+            <div>
+              <p><strong>Ingresso Inteiro</strong></p>
+              <p>Lote Atual</p>
+              <p class="font-semibold">R$ ${valor},00 + taxa</p>
+            </div>
+            <div class="flex items-center space-x-3 mt-2">
+              <label for="qty-${id}" class="text-sm font-medium">Quantidade:</label>
+              <div class="flex items-center space-x-2">
+                <button onclick="changeQty('${id}', -1)" class="px-2 py-1 bg-gray-200 rounded">-</button>
+                <span id="qty-${id}" class="w-6 text-center">0</span>
+                <button onclick="changeQty('${id}', 1)" class="px-2 py-1 bg-gray-200 rounded">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(bloco);
+      });
+
+      function changeQty(id, delta) {
+        const qtySpan = document.getElementById(`qty-${id}`);
+        let qty = parseInt(qtySpan.textContent);
+        qty = Math.max(0, Math.min(2, qty + delta));
+        qtySpan.textContent = qty;
+      }
+    </script>
+
+    <!-- INFORMAÇÕES DO EVENTO -->
+    <div class="bg-white shadow rounded p-4">
+      <h2 class="text-xl font-bold mb-2">INFORMAÇÕES</h2>
+      <hr class="mb-4">
+      <div class="text-gray-700 space-y-2">
+        <p><strong>Local:</strong> Arena de Eventos Exemplo</p>
+        <p><strong>Data:</strong> 25 de Dezembro de 2025</p>
+        <p><strong>Abertura dos Portões:</strong> 18h</p>
+        <p><strong>Classificação:</strong> 16 anos</p>
+        <p><strong>Descrição:</strong> Show especial de fim de ano com diversas atrações nacionais e estrutura completa de som, luz e segurança.</p>
+      </div>
+    </div>
+
+  </div>
         </div>
       </Box>
     );
