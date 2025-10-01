@@ -1,21 +1,12 @@
+import { useEffect } from 'react';
+
 const IngressosPage = () => {
-  return (
-    <iframe
-      src="/ingressos/index.html"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        border: 'none',
-        margin: 0,
-        padding: 0,
-        overflow: 'hidden'
-      }}
-      title="Ingressos"
-    />
-  );
+  useEffect(() => {
+    // Redireciona diretamente para a página HTML
+    window.location.replace('/ingressos/index.html');
+  }, []);
+
+  return null;
 };
 
 export default IngressosPage;
