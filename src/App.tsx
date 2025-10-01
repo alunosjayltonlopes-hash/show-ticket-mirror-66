@@ -21,12 +21,12 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<IngressosPage />} />
-            <Route path="/ingressos" element={<IngressosPage />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/ingressos" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/br/*" element={<Navigate to="/ingressos" replace />} />
             <Route path="/henrique-e-juliano-manifesto-maracana" element={<ManifestoPage />} />
-            <Route path="/original" element={<Index />} />
+            <Route path="/original" element={<IngressosPage />} />
             {/* Legacy route for compatibility */}
             <Route path="/dashboard" element={<Dashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
