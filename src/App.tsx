@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ManifestoPage from "./pages/ManifestoPage";
+import IngressosPage from "./pages/IngressosPage";
 
 const queryClient = new QueryClient();
 
@@ -20,9 +21,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<ManifestoPage />} />
+            <Route path="/" element={<IngressosPage />} />
+            <Route path="/ingressos" element={<IngressosPage />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/br/*" element={<Navigate to="/henrique-e-juliano-manifesto-maracana" replace />} />
+            <Route path="/br/*" element={<Navigate to="/ingressos" replace />} />
             <Route path="/henrique-e-juliano-manifesto-maracana" element={<ManifestoPage />} />
             <Route path="/original" element={<Index />} />
             {/* Legacy route for compatibility */}
